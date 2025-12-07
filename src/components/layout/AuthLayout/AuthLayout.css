@@ -1,0 +1,24 @@
+.container-layout {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+}
+
+.sides {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.logo-position {
+  position: absolute;
+  top: 24px;
+  left: 26px;
+  width: fit-content;
+}
+
+.right-side {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
