@@ -1,12 +1,11 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Input from "../../common components/Input";
-import Profile from "../../../assets/profile.svg";
+import { Link, useNavigate } from "react-router-dom";
 import Mail from "../../../assets/Mail.svg";
 import Password from "../../../assets/password.svg";
-import { Link } from "react-router-dom";
+import Profile from "../../../assets/profile.svg";
+import api from "../../../api/axiosClient.js";
 import Button from "../../common components/Button";
-import axios from "axios";
+import Input from "../../common components/Input";
 import "./Signup.css";
 
 const Signup = () => {
@@ -53,16 +52,10 @@ const Signup = () => {
       return;
     }
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/user/signup",
-        formData
-      );
+      const response = await api.post("/user/signup", formData);
       console.log(response.data);
-      if (response.data.success) {
-        navigate("/auth/login");
-      } else {
-        console.error("Signup failed:", response.data.message);
-      }
+      if (response.data && response.data.success) navigate("/auth/login");
+      else setErrors({ form: response.data.message || "Signup failed" });
     } catch (error) {
       if (error.response && error.response.data) {
         const { message } = error.response.data;
@@ -152,22 +145,20 @@ const Signup = () => {
               {errors.confirmPassword}
             </p>
           )}
-          {isLoading ? (
-            <Button
-              type="submit"
-              disabled={true}
-              cssClasses="w-full rounded-[20px] bg-gray-500 text-gray-300 cursor-not-allowed px-5 py-2 uppercase mt-2"
-            >
-              Signing...
-            </Button>
-          ) : (
-            <Button
-              type="submit"
-              cssClasses="w-full rounded-[20px] bg-sky-900 hover:bg-sky-950 text-white cursor-pointer px-5 py-2 uppercase mt-2"
-            >
-              Sign Up
-            </Button>
+          {errors.form && (
+            <p className="text-red-500 text-xs mt-[-10px]">{errors.form}</p>
           )}
+          <Button
+            type="submit"
+            disabled={isLoading}
+            cssClasses={`w-full rounded-[20px] px-5 py-2 uppercase mt-2 ${
+              isLoading
+                ? "bg-gray-500 text-gray-300 cursor-not-allowed"
+                : "bg-sky-900 hover:bg-sky-950 text-white cursor-pointer"
+            }`}
+          >
+            {isLoading ? "Signing..." : "Sign Up"}
+          </Button>
         </form>
         <div className="flex items-center justify-center gap-2 mt-1">
           <p className="text-gray-500 text-base">Already have an account?</p>

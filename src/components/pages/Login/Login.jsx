@@ -1,19 +1,16 @@
+import * as Switch from "@radix-ui/react-switch";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Input from "../../common components/Input/Input";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../../api/axiosClient.js";
 import Mail from "../../../assets/Mail.svg";
 import Password from "../../../assets/password.svg";
-import * as Switch from "@radix-ui/react-switch";
-import { Link } from "react-router-dom";
+import { loginSuccess } from "../../../redux/authSlice.js";
 import Button from "../../common components/Button";
-import axios from "axios";
-import { setUser } from "../../../../redux/userSlice";
-import { useDispatch } from "react-redux";
-import { jwtDecode } from "jwt-decode";
+import Input from "../../common components/Input/Input";
 import "./Login.css";
 
 const Login = () => {
-  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
@@ -22,6 +19,7 @@ const Login = () => {
     email: "",
     password: "",
   });
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleFormLogin = async (e) => {
@@ -43,20 +41,14 @@ const Login = () => {
       return;
     }
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/user/login",
-        formData
-      );
-      if (response.data.success) {
-        const token = response.data.token;
-        localStorage.setItem("token", token);
-        const userData = jwtDecode(token);
-        localStorage.setItem("userData", JSON.stringify(userData));
-        dispatch(setUser(userData));
-        if (userData.role === "customer") navigate("/home");
-        else if (userData.role === "admin") navigate("/menu");
+      const response = await api.post("/user/login", formData);
+      if (response.data && response.data.success) {
+        dispatch(loginSuccess({ token: response.data.token }));
+        const user = response.data.user;
+        if (user.role === "customer") navigate("/home");
+        else if (user.role === "admin") navigate("/menu");
       } else {
-        console.error("Login failed:", response.data.message);
+        setErrors({ form: response.data.message || "Login failed" });
       }
     } catch (error) {
       if (error.response && error.response.data) {
@@ -155,22 +147,17 @@ const Login = () => {
               Forgot Password
             </Link>
           </div>
-          {isLoading ? (
-            <Button
-              type="submit"
-              disabled={true}
-              cssClasses="w-full rounded-[20px] bg-gray-500 text-gray-300 cursor-not-allowed px-5 py-2 uppercase mt-2"
-            >
-              Logging...
-            </Button>
-          ) : (
-            <Button
-              type="submit"
-              cssClasses="w-full rounded-[20px] bg-sky-900 hover:bg-sky-950 text-white cursor-pointer px-5 py-2 uppercase mt-2"
-            >
-              Login
-            </Button>
-          )}
+          <Button
+            type="submit"
+            disabled={isLoading}
+            cssClasses={`w-full rounded-[20px] px-5 py-2 uppercase mt-2 ${
+              isLoading
+                ? "bg-gray-500 text-gray-300 cursor-not-allowed"
+                : "bg-sky-900 hover:bg-sky-950 text-white cursor-pointer"
+            }`}
+          >
+            {isLoading ? "Logging..." : "Login"}
+          </Button>
         </form>
         <div className="flex items-center justify-center gap-2 mt-1">
           <p className="text-gray-500 text-base">Don't have an account?</p>

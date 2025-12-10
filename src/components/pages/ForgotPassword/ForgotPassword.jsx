@@ -1,16 +1,19 @@
 import { useState } from "react";
-import Input from "../../common components/Input/Input";
-import Mail from "../../../assets/Mail.svg";
-import { Link, useNavigate } from "react-router-dom";
 import { FaArrowLeft } from "react-icons/fa6";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import api from "../../../api/axiosClient.js";
+import Mail from "../../../assets/Mail.svg";
+import { setEmailEntered } from "../../../redux/authSlice.js";
 import Button from "../../common components/Button";
-import axios from "axios";
+import Input from "../../common components/Input/Input";
 
 const ForgotPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [email, setEmail] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleFormEmail = async (e) => {
     e.preventDefault();
@@ -27,12 +30,10 @@ const ForgotPassword = () => {
       return;
     }
     try {
-      const response = await axios.get(
-        `http://localhost:3000/api/user/${email}`
-      );
+      const response = await api.get(`/user/${email}`);
       console.log(response);
       if (response.data.success) {
-        localStorage.setItem("resetEmail", email);
+        dispatch(setEmailEntered(email));
         navigate("/auth/newpassword");
       } else {
         console.error("Login failed:", response.data.message);

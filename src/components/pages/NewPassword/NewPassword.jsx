@@ -1,11 +1,17 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import Input from "../../common components/Input";
-import Password from "../../../assets/password.svg";
-import Button from "../../common components/Button";
 import axios from "axios";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import Password from "../../../assets/password.svg";
+import { setPasswordReset } from "../../../redux/authSlice.js";
+import Button from "../../common components/Button";
+import Input from "../../common components/Input";
+import api from "../../../api/axiosClient.js";
 
 const NewPassword = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const resetEmail = useSelector((state) => state.auth.emailEntered);
   const [isLoading, setIsLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
@@ -15,15 +21,12 @@ const NewPassword = () => {
     password: "",
     confirmPassword: "",
   });
-  const navigate = useNavigate();
+
   useEffect(() => {
-    const email = localStorage.getItem("resetEmail");
-    if (!email) {
-      navigate("/auth/forgotpassword");
-    } else {
-      setFormData((prev) => ({ ...prev, email }));
+    if (resetEmail) {
+      setFormData((prev) => ({ ...prev, email: resetEmail }));
     }
-  }, [navigate]);
+  }, []);
 
   const handleFormPasswordReset = async (e) => {
     e.preventDefault();
@@ -48,14 +51,10 @@ const NewPassword = () => {
     }
     try {
       console.log(formData);
-      const response = await axios.put(
-        "http://localhost:3000/api/user/update",
-        formData
-      );
+      const response = await api.put("/user/update", formData);
       console.log(response.data);
       if (response.data.success) {
-        localStorage.setItem("passwordResetSuccessful", "true");
-        console.log("navigating to success page from newpassword");
+        dispatch(setPasswordReset(true));
         navigate("/auth/newpassword/successful");
       } else {
         console.error("Update Password failed:", response.data.message);

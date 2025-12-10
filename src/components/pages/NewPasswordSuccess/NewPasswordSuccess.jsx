@@ -1,18 +1,11 @@
 import { Link, useNavigate } from "react-router-dom";
 import ResetDone from "../../../assets/password-reset-success.svg";
 import { FaArrowLeft } from "react-icons/fa6";
-import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setPasswordReset, setEmailEntered } from "../../../redux/authSlice.js";
 
 const NewPasswordSuccess = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const isPasswordReset = localStorage.getItem("passwordResetSuccessful");
-    console.log("password reset success in success route", isPasswordReset);
-    if (!isPasswordReset) {
-      navigate("/auth/newpassword");
-    }
-  }, [navigate]);
+  const dispatch = useDispatch();
 
   return (
     <div className="flex justify-center items-center h-full w-full">
@@ -26,8 +19,8 @@ const NewPasswordSuccess = () => {
           to="/auth/login"
           className="bg-white border-sky-900 border-2 hover:underline text-sky-900 rounded-[20px] px-5 py-2 flex gap-2 justify-center items-center text-base w-11/12 text-center mt-2 uppercase"
           onClick={() => {
-            localStorage.removeItem("passwordResetSuccessful");
-            localStorage.removeItem("resetEmail");
+            dispatch(setEmailEntered(""));
+            dispatch(setPasswordReset(false));
           }}
         >
           <FaArrowLeft /> Back to Login

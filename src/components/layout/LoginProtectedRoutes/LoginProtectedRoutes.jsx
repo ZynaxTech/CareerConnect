@@ -1,15 +1,13 @@
-import { jwtDecode } from "jwt-decode";
 import { Navigate, Outlet } from "react-router-dom";
+import { getUserFromToken } from "../../../auth/authService.js";
+import { useSelector } from "react-redux";
 
 const LoginProtectedRoutes = () => {
-  const token = localStorage.getItem("token");
-  const isLoggedIn = token ? jwtDecode(token) : "Not logged in";
-  return isLoggedIn && isLoggedIn.role === "customer" ? (
-    <Outlet />
-  ) : isLoggedIn && isLoggedIn.role === "admin" ? (
-    <Navigate to="/menu" />
-  ) : (
-    <Navigate to="/auth/login" />
-  );
+  const reduxUser = useSelector((state) => state.auth.user);
+  const user = reduxUser || getUserFromToken();
+  if (!user) return <Navigate to="/auth/login" replace />;
+  if (user.role === "customer") return <Outlet />;
+  if (user.role === "admin") return <Navigate to="/menu" replace />;
+  return <Navigate to="/auth/login" replace />;
 };
 export default LoginProtectedRoutes;
