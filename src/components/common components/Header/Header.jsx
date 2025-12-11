@@ -1,15 +1,20 @@
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../../redux/authSlice.js";
 import { useSelector } from "react-redux";
 import careerConnectLogo from "../../../assets/careerconnect.png";
 import defaultPhoto from "../../../assets/defaultpicture.svg";
 import { useEffect, useRef, useState } from "react";
+import axios from "axios";
+import { toast } from "sonner";
+import { getAccessToken, getTokenUser } from "@/auth/authService.js";
 
 const Header = () => {
   const [isVisible, setIsVisible] = useState(false);
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.auth.user) || getTokenUser();
+  const accessToken = getAccessToken();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const dropdownRef = useRef(null);
   const location = useLocation();
 
@@ -21,6 +26,27 @@ const Header = () => {
   const handleOutsideClick = (event) => {
     if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
       setIsVisible(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post(
+        `http://localhost:3000/api/user/logout`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      if (response.data.success) {
+        dispatch(logout());
+        toast.success(response.data.message);
+        navigate("/auth/login");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -45,7 +71,9 @@ const Header = () => {
             height={50}
             width={50}
           />
-          <h4 className="text-xl font-semibold text-gray-950">Career Connect</h4>
+          <h4 className="text-xl font-semibold text-gray-950">
+            Career Connect
+          </h4>
         </Link>
         <div className="flex items-center gap-8 font-medium">
           <NavLink
@@ -64,7 +92,7 @@ const Header = () => {
                 ? "text-amberColor text-base px-2 py-1"
                 : "hover:text-white hover:bg-amberColor px-2 py-1 rounded-md transition-colors"
             }
-            to="/booking"
+            to="/universities"
           >
             Universities
           </NavLink>
@@ -74,7 +102,7 @@ const Header = () => {
                 ? "text-amberColor text-base px-2 py-1"
                 : "hover:text-white hover:bg-amberColor px-2 py-1 rounded-md transition-colors"
             }
-            to="/menu/starter"
+            to="/exam"
           >
             Exams
           </NavLink>
@@ -84,7 +112,7 @@ const Header = () => {
                 ? "text-amberColor text-base px-2 py-1"
                 : "hover:text-white hover:bg-amberColor px-2 py-1 rounded-md transition-colors"
             }
-            to="/feedback"
+            to="/community"
           >
             Community
           </NavLink>
@@ -104,11 +132,7 @@ const Header = () => {
             className="border-none bg-white rounded-full flex items-center justify-center relative z-50"
           >
             <img
-              src={
-                user?.picURL !== "none"
-                  ? localStorage.getItem("userData")?.picURL
-                  : defaultPhoto
-              }
+              src={user?.picURL !== "none" ? user?.picURL : defaultPhoto}
               alt="profile picture"
               height={50}
               width={50}
@@ -130,15 +154,12 @@ const Header = () => {
               >
                 My Profile
               </NavLink>
-              <Link
-                to="/auth/login"
+              <button
                 className="block px-4 py-2 text-red-600 hover:bg-gray-100 text-center transition-colors w-full rounded-lg"
-                onClick={() => {
-                  dispatch(logout());
-                }}
+                onClick={handleLogout}
               >
                 Logout
-              </Link>
+              </button>
             </div>
           )}
         </div>

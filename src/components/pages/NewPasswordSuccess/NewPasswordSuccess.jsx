@@ -1,8 +1,12 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import ResetDone from "../../../assets/password-reset-success.svg";
 import { FaArrowLeft } from "react-icons/fa6";
 import { useDispatch } from "react-redux";
-import { setPasswordReset, setEmailEntered } from "../../../redux/authSlice.js";
+import {
+  setPasswordReset,
+  setEmailEntered,
+  setOTPEntered,
+} from "../../../redux/authSlice.js";
 
 const NewPasswordSuccess = () => {
   const dispatch = useDispatch();
@@ -21,6 +25,7 @@ const NewPasswordSuccess = () => {
           onClick={() => {
             dispatch(setEmailEntered(""));
             dispatch(setPasswordReset(false));
+            dispatch(setOTPEntered(false));
           }}
         >
           <FaArrowLeft /> Back to Login

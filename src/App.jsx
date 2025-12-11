@@ -14,10 +14,14 @@ import PageNotFound from "./components/pages/PageNotFound";
 import ProtectedRoute from "./components/pages/ProtectedRoute";
 import Signup from "./components/pages/Signup";
 import Welcome from "./components/pages/Welcome";
+import VerifyEmail from "./components/pages/VerifyEmail";
+import Verify from "./components/pages/Verify";
+import VerifyOTP from "./components/pages/VerifyOTP";
 
 function App() {
   const isEmailEntered = useSelector((state) => state.auth.emailEntered);
   const isPasswordReset = useSelector((state) => state.auth.passwordReset);
+  const isOTPEntered = useSelector((state) => state.auth.otpEntered);
 
   return (
     <Router>
@@ -26,12 +30,25 @@ function App() {
         <Route path="/auth" element={<AuthLayout />}>
           <Route path="login" element={<Login />} />
           <Route path="signup" element={<Signup />} />
-          <Route path="forgotpassword" element={<ForgotPassword />} />
+          <Route path="verify" element={<VerifyEmail />} />
+          <Route path="verify/:token" element={<Verify />} />
+          <Route path="forgot-password" element={<ForgotPassword />} />
           <Route
-            path="newpassword"
+            path="verify-otp/:email"
             element={
               <ProtectedRoute
                 condition={isEmailEntered}
+                redirectTo="/auth/login"
+              >
+                <VerifyOTP />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="update-password/:email"
+            element={
+              <ProtectedRoute
+                condition={isOTPEntered}
                 redirectTo="/auth/login"
               >
                 <NewPassword />
@@ -39,11 +56,11 @@ function App() {
             }
           />
           <Route
-            path="newpassword/successful"
+            path="update-password/:email/success"
             element={
               <ProtectedRoute
                 condition={isPasswordReset}
-                redirectTo="/auth/newpassword"
+                redirectTo="/auth/login"
               >
                 <NewPasswordSuccess />
               </ProtectedRoute>

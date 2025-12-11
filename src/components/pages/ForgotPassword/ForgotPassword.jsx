@@ -2,11 +2,13 @@ import { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../../../api/axiosClient.js";
 import Mail from "../../../assets/Mail.svg";
 import { setEmailEntered } from "../../../redux/authSlice.js";
 import Button from "../../common components/Button";
 import Input from "../../common components/Input/Input";
+import axios from "axios";
+import { RiLoader3Fill } from "react-icons/ri";
+import { toast } from "sonner";
 
 const ForgotPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -30,11 +32,16 @@ const ForgotPassword = () => {
       return;
     }
     try {
-      const response = await api.get(`/user/${email}`);
+      const response = await axios.post(
+        "http://localhost:3000/api/user/forgot-password",
+        { email }
+      );
       console.log(response);
       if (response.data.success) {
         dispatch(setEmailEntered(email));
-        navigate("/auth/newpassword");
+        toast.success(response.data.message);
+        navigate(`/auth/verify-otp/${email}`);
+        setEmail("");
       } else {
         console.error("Login failed:", response.data.message);
       }
@@ -83,22 +90,24 @@ const ForgotPassword = () => {
             <p className="text-red-500 text-xs mt-[-10px]">{errors.forget}</p>
           )}
 
-          {isLoading ? (
-            <Button
-              type="submit"
-              disabled={true}
-              cssClasses="w-full rounded-[20px] bg-gray-500 text-gray-300 cursor-not-allowed px-5 py-2 uppercase mt-2"
-            >
-              Continuing...
-            </Button>
-          ) : (
-            <Button
-              type="submit"
-              cssClasses="w-full rounded-[20px] bg-sky-900 hover:bg-sky-950 text-white cursor-pointer px-5 py-2 uppercase mt-2"
-            >
-              Continue
-            </Button>
-          )}
+          <Button
+            type="submit"
+            disabled={isLoading}
+            cssClasses={`w-full rounded-[20px] px-5 py-2 uppercase mt-2 ${
+              isLoading
+                ? "bg-gray-500 text-gray-300 cursor-not-allowed"
+                : "bg-sky-900 hover:bg-sky-950 text-white cursor-pointer"
+            }`}
+          >
+            {isLoading ? (
+              <>
+                <RiLoader3Fill className="text-xl animate-spin" />
+                <span>Sending...</span>
+              </>
+            ) : (
+              "Send Reset Link"
+            )}
+          </Button>
           <Link
             to="/auth/login"
             className="bg-white border-sky-900 border-2 hover:underline text-sky-900 rounded-[20px] px-5 py-2 flex gap-2 justify-center items-center text-base w-full text-center uppercase"

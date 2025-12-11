@@ -143,7 +143,7 @@ const handlePostUserLogin = async (req, res) => {
     user.isLoggedIn = true;
     await user.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: `Welcome ${user.name}`,
       accessToken,

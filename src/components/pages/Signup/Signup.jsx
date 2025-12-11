@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import Mail from "../../../assets/Mail.svg";
-import Password from "../../../assets/password.svg";
-import Profile from "../../../assets/profile.svg";
-import api from "../../../api/axiosClient.js";
+import { IoMailOutline } from "react-icons/io5";
+import { IoPersonOutline } from "react-icons/io5";
+import { HiOutlineLockClosed } from "react-icons/hi2";
 import Button from "../../common components/Button";
 import Input from "../../common components/Input";
+import { RiLoader3Fill } from "react-icons/ri";
 import "./Signup.css";
+import { toast } from "sonner";
+import axios from "axios";
 
 const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -52,9 +54,9 @@ const Signup = () => {
       return;
     }
     try {
-      const response = await api.post("/user/signup", formData);
-      console.log(response.data);
-      if (response.data && response.data.success) navigate("/auth/login");
+      const response = await axios.post("http://localhost:3000/api/user/signup", formData);
+      toast.success(response.data.message);
+      if (response.data && response.data.success) navigate("/auth/verify");
       else setErrors({ form: response.data.message || "Signup failed" });
     } catch (error) {
       if (error.response && error.response.data) {
@@ -100,7 +102,7 @@ const Signup = () => {
             name="name"
             value={formData.name}
             onChange={handleInputChange}
-            image={Profile}
+            icon={<IoPersonOutline className="text-xl text-gray-500" />}
             placeholder="Full name"
           />
           {errors.name && (
@@ -111,7 +113,7 @@ const Signup = () => {
             name="email"
             value={formData.email}
             onChange={handleInputChange}
-            image={Mail}
+            icon={<IoMailOutline className="text-xl text-gray-500" />}
             placeholder="abc@gmail.com"
           />
           {errors.email && (
@@ -122,7 +124,7 @@ const Signup = () => {
             name="password"
             value={formData.password}
             onChange={handleInputChange}
-            image={Password}
+            icon={<HiOutlineLockClosed className="text-xl text-gray-500" />}
             placeholder="Your Password"
             password={true}
             togglePassword={togglePassword}
@@ -135,7 +137,7 @@ const Signup = () => {
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleInputChange}
-            image={Password}
+            icon={<HiOutlineLockClosed className="text-xl text-gray-500" />}
             placeholder="Confirm Password"
             password={true}
             togglePassword={toggleConfirmPassword}
@@ -157,7 +159,14 @@ const Signup = () => {
                 : "bg-sky-900 hover:bg-sky-950 text-white cursor-pointer"
             }`}
           >
-            {isLoading ? "Signing..." : "Sign Up"}
+            {isLoading ? (
+              <>
+                <RiLoader3Fill className="text-xl animate-spin" />
+                <span>Creating account...</span>
+              </>
+            ) : (
+              "Sign Up"
+            )}
           </Button>
         </form>
         <div className="flex items-center justify-center gap-2 mt-1">

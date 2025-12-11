@@ -1,7 +1,6 @@
 const nodemailer = require("nodemailer");
 const fs = require("fs");
 const path = require("path");
-const { fileURLToPath } = require("url");
 const handlebars = require("handlebars");
 
 const verifyMail = async (token, email) => {

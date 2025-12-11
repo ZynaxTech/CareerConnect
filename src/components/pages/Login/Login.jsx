@@ -2,13 +2,15 @@ import * as Switch from "@radix-ui/react-switch";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import api from "../../../api/axiosClient.js";
-import Mail from "../../../assets/Mail.svg";
-import Password from "../../../assets/password.svg";
+import { IoMailOutline } from "react-icons/io5";
+import { HiOutlineLockClosed } from "react-icons/hi2";
 import { loginSuccess } from "../../../redux/authSlice.js";
 import Button from "../../common components/Button";
 import Input from "../../common components/Input/Input";
 import "./Login.css";
+import { RiLoader3Fill } from "react-icons/ri";
+import { toast } from "sonner";
+import axios from "axios";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -41,9 +43,15 @@ const Login = () => {
       return;
     }
     try {
-      const response = await api.post("/user/login", formData);
+      const response = await axios.post("http://localhost:3000/api/user/login", formData);
       if (response.data && response.data.success) {
-        dispatch(loginSuccess({ token: response.data.token }));
+        toast.success(response.data.message);
+        dispatch(
+          loginSuccess({
+            user: response.data.user,
+            accessToken: response.data.accessToken,
+          })
+        );
         const user = response.data.user;
         if (user.role === "customer") navigate("/home");
         else if (user.role === "admin") navigate("/menu");
@@ -96,7 +104,7 @@ const Login = () => {
             name="email"
             value={formData.email}
             onChange={handleInputChange}
-            image={Mail}
+            icon={<IoMailOutline className="text-xl text-gray-500" />}
             placeholder="abc@gmail.com"
           />
           {errors.email && (
@@ -107,7 +115,7 @@ const Login = () => {
             name="password"
             value={formData.password}
             onChange={handleInputChange}
-            image={Password}
+            icon={<HiOutlineLockClosed className="text-xl text-gray-500" />}
             placeholder="Your Password"
             password={true}
             togglePassword={togglePassword}
@@ -141,7 +149,7 @@ const Login = () => {
               </label>
             </div>
             <Link
-              to="/auth/forgotpassword"
+              to="/auth/forgot-password"
               className="text-gray-500 hover:underline text-sm"
             >
               Forgot Password
@@ -156,7 +164,14 @@ const Login = () => {
                 : "bg-sky-900 hover:bg-sky-950 text-white cursor-pointer"
             }`}
           >
-            {isLoading ? "Logging..." : "Login"}
+            {isLoading ? (
+              <>
+                <RiLoader3Fill className="text-xl animate-spin" />
+                <span>Logging in...</span>
+              </>
+            ) : (
+              "Login"
+            )}
           </Button>
         </form>
         <div className="flex items-center justify-center gap-2 mt-1">

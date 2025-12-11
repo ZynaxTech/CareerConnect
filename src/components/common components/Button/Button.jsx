@@ -8,7 +8,7 @@ const Button = ({
     <button
       disabled={disabled}
       type={type}
-      className={`border-none text-base text-center ${cssClasses}`}
+      className={`flex justify-center gap-2 items-center border-none text-base ${cssClasses}`}
     >
       {children}
     </button>
