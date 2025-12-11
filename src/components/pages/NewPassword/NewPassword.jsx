@@ -1,32 +1,25 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import Password from "../../../assets/password.svg";
-import { setOTPEntered, setPasswordReset } from "../../../redux/authSlice.js";
+import { setPasswordReset } from "../../../redux/authSlice.js";
 import Button from "../../common components/Button";
 import Input from "../../common components/Input";
 import { RiLoader3Fill } from "react-icons/ri";
 
 const NewPassword = () => {
+  const { email } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const resetEmail = useSelector((state) => state.auth.emailEntered);
   const [isLoading, setIsLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
-    email: "",
     password: "",
     confirmPassword: "",
   });
-
-  useEffect(() => {
-    if (resetEmail) {
-      setFormData((prev) => ({ ...prev, email: resetEmail }));
-    }
-  }, []);
 
   const handleFormPasswordReset = async (e) => {
     e.preventDefault();
@@ -52,14 +45,13 @@ const NewPassword = () => {
     try {
       console.log(formData);
       const response = await axios.put(
-        `http://localhost:3000/api/user/update-password/${formData.email}`,
+        `http://localhost:3000/api/user/update-password/${email}`,
         formData
       );
       console.log(response.data);
       if (response.data.success) {
         dispatch(setPasswordReset(true));
-        navigate(`/auth/update-password/${resetEmail}/success`);
-        dispatch(setOTPEntered(false));
+        navigate(`/auth/update-password/${email}/success`);
       } else {
         console.error("Update Password failed:", response.data.message);
       }

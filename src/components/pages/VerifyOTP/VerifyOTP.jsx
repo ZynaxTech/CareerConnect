@@ -9,10 +9,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { setEmailEntered, setOTPEntered } from "@/redux/authSlice";
+import { setOTPEntered } from "@/redux/authSlice";
 import axios from "axios";
 import { CheckCircle, Loader2, RotateCcw } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { RiLoader3Fill } from "react-icons/ri";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -58,7 +58,6 @@ const VerifyOTP = () => {
       setSuccessMessage(res.data.message);
       setTimeout(() => {
         navigate(`/auth/update-password/${email}`);
-        dispatch(setEmailEntered(""));
       }, 5000);
     } catch (error) {
       setError(error.response?.data?.message || "Something went wrong");
