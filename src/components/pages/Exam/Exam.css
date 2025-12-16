@@ -1,0 +1,110 @@
+.home-hero {
+  background: linear-gradient(180deg, #0b0b0c 0%, #111113 100%);
+  min-height: 80vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-hero::before {
+  content: "";
+  position: absolute;
+  right: -10%;
+  top: -10%;
+  width: 680px;
+  height: 680px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(59, 130, 246, 0.18),
+    rgba(99, 102, 241, 0.06) 40%,
+    transparent 60%
+  );
+  filter: blur(60px);
+  pointer-events: none;
+}
+
+.home-hero::after {
+  content: "";
+  position: absolute;
+  left: -5%;
+  bottom: -10%;
+  width: 420px;
+  height: 420px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  transform: rotate(-12deg);
+  filter: blur(8px);
+}
+
+.stats-section {
+  margin-top: 2rem;
+}
+
+.stat-card {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.02),
+    rgba(255, 255, 255, 0.01)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 1.25rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.6);
+}
+
+.stat-card .icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.stat-card .value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.stat-card .label {
+  font-size: 0.85rem;
+  color: #9ca3af;
+  margin-top: 0.35rem;
+}
+
+/* Deadlines section */
+.deadlines-wrapper .deadlines-head h4 {
+  font-size: 1.125rem;
+}
+.deadlines-card {
+  background: #fff;
+}
+.deadline-card {
+  background: #fff7ed;
+}
+.deadline-card .font-semibold {
+  color: #111827;
+}
+.deadline-card .text-gray-600 {
+  color: #6b7280;
+}
+
+@media (max-width: 640px) {
+  .home-hero {
+    padding-bottom: 4rem;
+  }
+}
+
+.categories-section h3 {
+  color: #111827;
+}
+.exam-card {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+.exam-image {
+  background-color: #e5e7eb;
+}
+.exam-card .p-4 h4 {
+  color: #111827;
+}
+.exam-card button {
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.18);
+}
