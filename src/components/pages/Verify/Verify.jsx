@@ -20,26 +20,26 @@ const Verify = () => {
           }
         );
         if (res.data.success) {
-          setStatus("✅ Email Verified Successfully");
+          setStatus("Email Verified Successfully");
           setTimeout(() => {
             navigate("/auth/login");
           }, 2000);
         } else {
-          setStatus("❌ Invalid or Expired Token");
+          setStatus("Invalid or Expired Token");
         }
       } catch (error) {
         console.log(error);
-        setStatus("❌ Verification Failed.Please try again");
+        setStatus("Verification Failed.Please try again");
       }
     };
 
     verifyEmail();
   }, [token, navigate]);
   return (
-    <div className="relative w-full h-[760px] bg-green-100 overflow-hidden">
+    <div className="">
       <div className="min-h-screen flex items-center justify-center">
         <div className="bg-white p-6 rounded-xl shadow-md text-center w-[90%] max-w-md">
-          <h2 className="text-xl font-semibold text-gray-800">{status}</h2>
+          <h2 className="text-xl font-semibold text-sky-900">{status}</h2>
         </div>
       </div>
     </div>

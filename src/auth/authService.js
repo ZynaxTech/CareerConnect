@@ -2,7 +2,7 @@ const USER_KEY = "User";
 const TOKEN_KEY = "Token";
 
 export function saveUser(user) {
-  localStorage.setItem(USER_KEY, user);
+  localStorage.setItem(USER_KEY, JSON.stringify(user));
 }
 export function saveAccessToken(token) {
   localStorage.setItem(TOKEN_KEY, token);
@@ -17,11 +17,11 @@ export function clearAccessToken() {
 }
 
 export function getUser() {
-  return localStorage.getItem(USER_KEY);
+  return JSON.parse(localStorage.getItem(USER_KEY));
 }
 
 export function getAccessToken() {
-  return localStorage.getItem(TOKEN_KEY);
+  return  localStorage.getItem(TOKEN_KEY);
 }
 
 export function getValidUser() {

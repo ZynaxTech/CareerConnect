@@ -1,100 +1,181 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Send,
+  Facebook,
+  Instagram,
+  Youtube,
+  Linkedin,
+} from "lucide-react";
 import careerConnectLogo from "../../../assets/careerconnect.png";
-import Facebook from "../../../assets/Facebook icon.svg";
-import Instagram from "../../../assets/Instagram icon.svg";
-import Youtube from "../../../assets/Youtube.svg";
-import Linkedin from "../../../assets/Linkedin icon.svg";
-import Copyright from "../../../assets/Copyright.svg";
 
 const Footer = () => {
   return (
-    <footer className="bg-[#F9F9F9] flex flex-col w-full">
-      <div className="flex justify-between px-20 pb-12 pt-6 w-full">
-        <div className="flex flex-col gap-6 pt-[-1rem] items-start w-[28%]">
-          <Link
-            to="/home"
-            className="flex items-center gap-3 hover:no-underline"
-          >
-            <img
-              src={careerConnectLogo}
-              alt="career connect logo"
-              height={80}
-              width={80}
-            />
-            <h4 className="text-2xl font-semibold text-gray-950">
-              CAREER CONNECT
-            </h4>
-          </Link>
-          <p className="text-lg text-gray-400 leading-6">
-            Your one stop platform for University Admissions & Career Guidance
-            in Paistan
-          </p>
-        </div>
-
-        <div className="flex flex-1 gap-32 mt-6 justify-end">
-          <div className="flex flex-col gap-3">
-            <h4 className="text-lg font-semibold mb-2">What We Have</h4>
+    <footer className="bg-[#F9F9F9] w-full">
+      {/* Main Footer Content */}
+      <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+          {/* Company Info */}
+          <div className="lg:col-span-2">
             <Link
-              className="text-base text-gray-400 hover:text-gray-600"
               to="/home"
+              className="flex items-center gap-3 hover:no-underline mb-4"
             >
-              Home
+              <img
+                src={careerConnectLogo}
+                alt="career connect logo"
+                height={60}
+                width={60}
+              />
+              <h4 className="text-2xl font-bold text-gray-900">
+                CAREER CONNECT
+              </h4>
             </Link>
-            <Link
-              className="text-base text-gray-400 hover:text-gray-600"
-              to="/about"
-            >
-              About Us
-            </Link>
-          </div>
+            <p className="text-gray-600 mb-6 leading-relaxed">
+              Your one-stop platform for University Admissions & Career Guidance
+              in Pakistan. Connect with top universities, prepare for
+              competitive exams, and get expert career counseling.
+            </p>
 
-          <div className="flex flex-col gap-3">
-            <h4 className="text-lg font-semibold mb-2">What We Provide</h4>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            <h4 className="text-lg font-semibold mb-2">Find Us On</h4>
-            <div className="flex gap-4 items-center">
-              <Link to="/home">
-                <img src={Facebook} alt="Facebook" height={19.29} width={19} />
-              </Link>
-              <Link to="/home">
-                <img src={Instagram} alt="Instagram" height={19} width={19} />
-              </Link>
-              <Link to="/home">
-                <img src={Youtube} alt="Youtube" height={24.2} width={17} />
-              </Link>
-              <Link to="/home">
-                <img
-                  src={Linkedin}
-                  alt="Linkedin"
-                  height={19.25}
-                  width={19.2}
-                />
-              </Link>
+            {/* Social Media */}
+            <div className="flex gap-4">
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors"
+              >
+                <Facebook size={20} className="text-white" />
+              </a>
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-pink-600 rounded-full flex items-center justify-center hover:bg-pink-700 transition-colors"
+              >
+                <Instagram size={20} className="text-white" />
+              </a>
+              <a
+                href="https://youtube.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition-colors"
+              >
+                <Youtube size={20} className="text-white" />
+              </a>
+              <a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 bg-blue-700 rounded-full flex items-center justify-center hover:bg-blue-800 transition-colors"
+              >
+                <Linkedin size={20} className="text-white" />
+              </a>
             </div>
-            <h4 className="text-lg font-semibold mt-4">Contact Us</h4>
-            <p className="text-base text-gray-400">careerconnect@gmail.com</p>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h4 className="text-lg font-semibold text-gray-900 mb-4">
+              Quick Links
+            </h4>
+            <ul className="space-y-3">
+              <li>
+                <Link
+                  to="/home"
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/universities"
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Universities
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/exam"
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Entrance Exams
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/counselor"
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Career Counseling
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/community"
+                  className="text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Community
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Services */}
+          <div>
+            <h4 className="text-lg font-semibold text-gray-900 mb-4">
+              Our Services
+            </h4>
+            <ul className="space-y-3">
+              <li className="text-gray-600">University Admissions</li>
+              <li className="text-gray-600">Exam Preparation</li>
+              <li className="text-gray-600">Career Guidance</li>
+              <li className="text-gray-600">Student Community</li>
+              <li className="text-gray-600">Application Support</li>
+            </ul>
+          </div>
+
+          {/* Contact & Newsletter */}
+          <div>
+            <h4 className="text-lg font-semibold text-gray-900 mb-4">
+              Contact Info
+            </h4>
+            <div className="space-y-3 mb-6">
+              <div className="flex items-center gap-3">
+                <Mail size={16} className="text-gray-500" />
+                <span className="text-gray-600">careerconnect@gmail.com</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Phone size={16} className="text-gray-500" />
+                <span className="text-gray-600">+92 300 1234567</span>
+              </div>
+              <div className="flex items-start gap-3">
+                <MapPin size={16} className="text-gray-500 mt-1" />
+                <span className="text-gray-600 text-sm">
+                  Lahore, Punjab
+                  <br />
+                  Pakistan
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center w-full px-14 pb-6">
-        <div className="flex-1 flex items-center">
-          <div className="h-[3px] w-full bg-gray-400"></div>
-          <div className="h-4 w-4 rotate-45 bg-gray-400"></div>
-        </div>
-        <div className="flex flex-col items-center px-4">
-          <div className="flex items-center gap-2">
-            <img src={Copyright} alt="Copyright" />
-            <p className="text-base text-gray-400">
-              CareerConnect. All Rights Reserved By CareerConnect
-            </p>
+      {/* Bottom Section */}
+      <div className="border-t border-gray-200">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <div className="flex flex-col md:flex-row justify-center items-center gap-4">
+            {/* Copyright */}
+            <div className="flex items-center gap-2 text-gray-600 text-sm">
+              <span>© 2025 CareerConnect. All rights reserved.</span>
+            </div>
           </div>
-        </div>
-        <div className="flex-1 flex items-center">
-          <div className="h-4 w-4 rotate-45 bg-gray-400"></div>
-          <div className="h-[3px] w-full bg-gray-400"></div>
         </div>
       </div>
     </footer>

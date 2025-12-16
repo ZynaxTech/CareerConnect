@@ -1,16 +1,15 @@
-import * as Switch from "@radix-ui/react-switch";
+import axios from "axios";
 import { useState } from "react";
+import { HiOutlineLockClosed } from "react-icons/hi2";
+import { IoMailOutline } from "react-icons/io5";
+import { RiLoader3Fill } from "react-icons/ri";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { IoMailOutline } from "react-icons/io5";
-import { HiOutlineLockClosed } from "react-icons/hi2";
+import { toast } from "sonner";
 import { loginSuccess } from "../../../redux/authSlice.js";
 import Button from "../../common components/Button";
 import Input from "../../common components/Input/Input";
 import "./Login.css";
-import { RiLoader3Fill } from "react-icons/ri";
-import { toast } from "sonner";
-import axios from "axios";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -43,7 +42,10 @@ const Login = () => {
       return;
     }
     try {
-      const response = await axios.post("http://localhost:3000/api/user/login", formData);
+      const response = await axios.post(
+        "http://localhost:3000/api/user/login",
+        formData
+      );
       if (response.data && response.data.success) {
         toast.success(response.data.message);
         dispatch(
@@ -96,7 +98,7 @@ const Login = () => {
     <div className="flex justify-center items-center h-full w-full">
       <div className="flex flex-col items-center gap-4 w-[45%]">
         <div className="w-full my-2">
-          <h3 className="text-2xl font-semibold">Login</h3>
+          <h3 className="text-2xl text-sky-900 font-semibold">Login</h3>
         </div>
         <form onSubmit={handleFormLogin} className="w-full flex flex-col gap-4">
           <Input
@@ -126,28 +128,7 @@ const Login = () => {
           {errors.login && (
             <p className="text-red-500 text-xs mt-[-10px]">{errors.login}</p>
           )}
-          <div className="flex justify-between items-center w-full">
-            <div className="flex items-center gap-2">
-              <Switch.Root
-                id="rememberMe"
-                checked={rememberMe}
-                name="remember_me"
-                value={rememberMe}
-                onCheckedChange={toggleRememberMe}
-                className={`w-10 h-6 ${
-                  rememberMe ? "bg-sky-900" : "bg-gray-300"
-                } rounded-full relative transition-colors`}
-              >
-                <Switch.Thumb
-                  className={`block w-4 h-4 bg-white rounded-full transition-transform ${
-                    rememberMe ? "translate-x-5" : "translate-x-1"
-                  }`}
-                />
-              </Switch.Root>
-              <label htmlFor="rememberMe" className="text-sm text-gray-500">
-                Remember Me
-              </label>
-            </div>
+          <div className="flex justify-end items-center w-full">
             <Link
               to="/auth/forgot-password"
               className="text-gray-500 hover:underline text-sm"
