@@ -1,11 +1,11 @@
-import { Link } from "react-router-dom";
-import ResetDone from "../../../assets/password-reset-success.svg";
 import { FaArrowLeft } from "react-icons/fa6";
 import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+import ResetDone from "../../../assets/password-reset-success.svg";
 import {
-  setPasswordReset,
   setEmailEntered,
   setOTPEntered,
+  setPasswordReset,
 } from "../../../redux/authSlice.js";
 
 const NewPasswordSuccess = () => {
@@ -15,7 +15,9 @@ const NewPasswordSuccess = () => {
     <div className="flex justify-center items-center h-full w-full">
       <div className="flex flex-col items-center justify-center gap-4 w-[45%]">
         <img src={ResetDone} alt="Cloud Done" />
-        <h3 className="text-2xl font-semibold mt-2">Password Changed!</h3>
+        <h3 className="text-2xl font-semibold mt-2 text-sky-900">
+          Password Changed!
+        </h3>
         <p className="text-[0.81rem] text-gray-400 w-full text-center mt-[-10px]">
           Your password has been changed successfully.
         </p>

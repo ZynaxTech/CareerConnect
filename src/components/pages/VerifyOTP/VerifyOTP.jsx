@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { setOTPEntered } from "@/redux/authSlice";
 import axios from "axios";
-import { CheckCircle, Loader2, RotateCcw } from "lucide-react";
+import { CheckCircle, RotateCcw } from "lucide-react";
 import { useRef, useState } from "react";
 import { RiLoader3Fill } from "react-icons/ri";
 import { useDispatch } from "react-redux";
@@ -58,7 +58,7 @@ const VerifyOTP = () => {
       setSuccessMessage(res.data.message);
       setTimeout(() => {
         navigate(`/auth/update-password/${email}`);
-      }, 5000);
+      }, 2000);
     } catch (error) {
       setError(error.response?.data?.message || "Something went wrong");
     } finally {
@@ -73,28 +73,19 @@ const VerifyOTP = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-green-100">
+    <div className="min-h-screen flex flex-col bg-white">
       {/* Main content */}
       <div className="flex-1 flex items-center justify-center p-4">
         <div className="w-full max-w-md space-y-6">
-          <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold tracking-tight text-green-600">
-              Verfiy your email
-            </h1>
-            <p className="text-muted-foreground">
-              We've sent a 6-digit verification code to{" "}
-              <span>{"your email"}</span>
-            </p>
-          </div>
           <Card className="shadow-lg">
             <CardHeader className="space-y-1">
-              <CardTitle className="text-2xl text-center text-green-600">
-                Enter verification code
-              </CardTitle>
+              {!isVerified && (
+                <CardTitle className="text-2xl text-center text-sky-900">
+                  Verify Your Email
+                </CardTitle>
+              )}
               <CardDescription className="text-center">
-                {isVerified
-                  ? "Code verified successfully! Redirecting..."
-                  : "Enter the 6-digit code sent to your email"}
+                {!isVerified && "Enter the 6-digit code sent to your email"}
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -103,19 +94,15 @@ const VerifyOTP = () => {
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
               )}
-              {successMessage && (
-                <p className="text-green-500 text-sm mb-3 text-center">
-                  {successMessage}
-                </p>
-              )}
+
               {isVerified ? (
-                <div className="py-6 flex flex-col items-center justify-center text-center space-y-4">
+                <div className="py-6 flex flex-col items-center justify-center text-center space-y-4 -mt-9">
                   <div className="bg-primary/10 rounded-full p-3">
-                    <CheckCircle className="h-6 w-6 text-primary" />
+                    <CheckCircle className="h-6 w-6 text-sky-900" />
                   </div>
                   <div className="space-y-2">
-                    <h3 className="font-medium text-lg">
-                      Verification successfull
+                    <h3 className="font-medium text-2xl  text-sky-900">
+                      OTP Verification successfull
                     </h3>
                     <p className="text-muted-foreground">
                       Your email has been verified. you'll be redirected to
@@ -123,7 +110,7 @@ const VerifyOTP = () => {
                     </p>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <RiLoader3Fill className="text-xl animate-spin" />
                     <span className="text-sm text-muted-foreground">
                       Redirecting...
                     </span>
@@ -150,7 +137,7 @@ const VerifyOTP = () => {
                     <Button
                       onClick={handleVerify}
                       disabled={isLoading || otp.some((digit) => digit === "")}
-                      className="bg-green-600 w-full"
+                      className="bg-sky-900 hover:bg-sky-950 w-full"
                     >
                       {isLoading ? (
                         <>
@@ -171,20 +158,20 @@ const VerifyOTP = () => {
                       Clear
                     </Button>
                   </div>
+                  <CardFooter className="flex justify-center">
+                    <p className="text-sm text-muted-foreground">
+                      Wrong email?{" "}
+                      <Link
+                        to={"/auth/forgot-password"}
+                        className=" text-sky-900 hover:underline"
+                      >
+                        Go back
+                      </Link>
+                    </p>
+                  </CardFooter>
                 </>
               )}
             </CardContent>
-            <CardFooter className="flex justify-center">
-              <p className="text-sm text-muted-foreground">
-                Wrong email?{" "}
-                <Link
-                  to={"/auth/forgot-password"}
-                  className="text-green-600 hover:underline font-medium"
-                >
-                  Go back
-                </Link>
-              </p>
-            </CardFooter>
           </Card>
         </div>
       </div>

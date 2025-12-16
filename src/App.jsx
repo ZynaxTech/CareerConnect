@@ -1,10 +1,9 @@
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
 import AuthLayout from "./components/layout/AuthLayout";
 import LoginProtectedRoutes from "./components/layout/LoginProtectedRoutes";
 import MainLayout from "./components/layout/MainLayout";
-import About from "./components/pages/About";
 import ForgotPassword from "./components/pages/ForgotPassword";
 import Home from "./components/pages/Home";
 import Login from "./components/pages/Login";
@@ -13,10 +12,10 @@ import NewPasswordSuccess from "./components/pages/NewPasswordSuccess";
 import PageNotFound from "./components/pages/PageNotFound";
 import ProtectedRoute from "./components/pages/ProtectedRoute";
 import Signup from "./components/pages/Signup";
-import Welcome from "./components/pages/Welcome";
-import VerifyEmail from "./components/pages/VerifyEmail";
 import Verify from "./components/pages/Verify";
+import VerifyEmail from "./components/pages/VerifyEmail";
 import VerifyOTP from "./components/pages/VerifyOTP";
+import Welcome from "./components/pages/Welcome";
 
 function App() {
   const isEmailEntered = useSelector((state) => state.auth.emailEntered);
@@ -70,7 +69,6 @@ function App() {
         <Route element={<LoginProtectedRoutes />}>
           <Route element={<MainLayout />}>
             <Route path="/home" element={<Home />} />
-            <Route path="/about" element={<About />} />
           </Route>
         </Route>
         <Route path="*" element={<PageNotFound />} />

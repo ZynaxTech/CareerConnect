@@ -1,14 +1,14 @@
+import axios from "axios";
 import { useState } from "react";
 import { FaArrowLeft } from "react-icons/fa6";
+import { RiLoader3Fill } from "react-icons/ri";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import Mail from "../../../assets/Mail.svg";
 import { setEmailEntered } from "../../../redux/authSlice.js";
 import Button from "../../common components/Button";
 import Input from "../../common components/Input/Input";
-import axios from "axios";
-import { RiLoader3Fill } from "react-icons/ri";
-import { toast } from "sonner";
 
 const ForgotPassword = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -69,7 +69,9 @@ const ForgotPassword = () => {
     <div className="flex justify-center items-center h-full w-full">
       <div className="flex flex-col items-center gap-4 w-[45%]">
         <div className="w-full my-2 flex flex-col gap-2">
-          <h3 className="text-2xl font-semibold">Forgot Password</h3>
+          <h3 className="text-2xl font-semibold text-sky-900">
+            Forgot Password
+          </h3>
           <p className="text-sm text-gray-400">
             Please enter your email address to request a password reset
           </p>
@@ -105,7 +107,7 @@ const ForgotPassword = () => {
                 <span>Sending...</span>
               </>
             ) : (
-              "Send Reset Link"
+              "Send Verification OTP"
             )}
           </Button>
           <Link

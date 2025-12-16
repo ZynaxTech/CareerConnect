@@ -11,7 +11,7 @@ import {
 
 const initialState = {
   accessToken: getAccessToken(),
-  user: getTokenUser(),
+  user: getTokenUser() || null,
   emailEntered: "",
   passwordReset: false,
   otpEntered: false,

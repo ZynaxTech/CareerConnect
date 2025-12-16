@@ -1,12 +1,12 @@
 import axios from "axios";
 import { useState } from "react";
+import { RiLoader3Fill } from "react-icons/ri";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import Password from "../../../assets/password.svg";
 import { setPasswordReset } from "../../../redux/authSlice.js";
 import Button from "../../common components/Button";
 import Input from "../../common components/Input";
-import { RiLoader3Fill } from "react-icons/ri";
 
 const NewPassword = () => {
   const { email } = useParams();
@@ -89,7 +89,9 @@ const NewPassword = () => {
     <div className="flex justify-center items-center h-full w-full">
       <div className="flex flex-col items-center gap-4 w-[45%]">
         <div className="w-full my-2 flex flex-col gap-2">
-          <h3 className="text-2xl font-semibold">Create New Password</h3>
+          <h3 className="text-2xl text-sky-900 font-semibold">
+            Create New Password
+          </h3>
           <p className="text-sm text-gray-400">
             Your new password must be different from previous used password
           </p>

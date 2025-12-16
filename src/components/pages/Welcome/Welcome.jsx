@@ -13,11 +13,13 @@ const Welcome = () => {
             width={50}
             height={50}
           />
-          <h4 className="font-semibold">Career Connect</h4>
+          <h4 className="font-semibold bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+            Career Connect
+          </h4>
         </div>
         <div className="home-container">
           <div className="welcome-content">
-            <p className="font-semibold text-2xl">
+            <p className="font-semibold text-2xl text-sky-950">
               Join the largest
               <br />
               Community of Pakistani Students
@@ -30,7 +32,7 @@ const Welcome = () => {
             >
               Login to Continue
             </Link>
-          </div>  
+          </div>
         </div>
       </div>
       <div className="sides right-side bg-gray-900">
