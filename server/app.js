@@ -5,6 +5,7 @@ const app = express();
 
 //Import custom modules
 const { userRouter } = require("./routes/userRoutes.js");
+const { universityRouter } = require("./routes/universityRoutes.js");
 
 // middleware to parse incoming requests
 app.use(
@@ -17,8 +18,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
-// user router use
+// router use
 app.use("/api/user", userRouter);
+app.use("/api/university", universityRouter);
 
 // Server setup
 const host = "localhost";
