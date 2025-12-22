@@ -1,3 +1,5 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
 import CountUp from "react-countup";
 import { BsFileEarmarkText } from "react-icons/bs";
 import { FaArrowRight } from "react-icons/fa";
@@ -9,86 +11,86 @@ import { useNavigate } from "react-router-dom";
 import "./Exam.css";
 
 const Exam = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
+  const [exams, setExams] = useState([]);
   const navigate = useNavigate();
-  const exams = [
-    {
-      id: "ecat",
-      title: "ECAT",
-      subtitle: "Engineering College Admission Test",
-      image: "/src/assets/ECAT.jpg",
-      date: "2026-02-30",
-      duration: "150 minutes",
-      universities: "50+",
-      subjectsCount: "4 Subjects",
-      subjects: ["Physics", "Chemistry", "Mathematics", "English"],
-      color: "blue",
-    },
-    {
-      id: "mdcat",
-      title: "MDCAT",
-      subtitle: "Medical & Dental College Admission Test",
-      image: "/src/assets/MDCAT.jpg",
-      date: "2026-01-25",
-      duration: "210 minutes",
-      universities: "30+",
-      subjectsCount: "5 Subjects",
-      subjects: ["Biology", "Chemistry", "Physics", "English", "Cognative"],
-      color: "purple",
-    },
-    {
-      id: "gat",
-      title: "GAT",
-      subtitle: "Graduate Assessment Test",
-      image: "/src/assets/GAT.jpg",
-      date: "2025-08-15",
-      duration: "180 minutes",
-      universities: "100+",
-      subjectsCount: "3 Subjects",
-      subjects: ["Verbal Reasoning", "Quantitative", "Analytical"],
-      color: "orange",
-    },
-    {
-      id: "css",
-      title: "CSS",
-      subtitle: "Central Superior Services",
-      image: "/src/assets/NAT.jpg",
-      date: "2025-07-30",
-      duration: "150 minutes",
-      universities: "10+",
-      subjectsCount: "4 Subjects",
-      subjects: [
-        "English",
-        "General Science",
-        "Current Affair",
-        "Pakistan Affair",
-      ],
-      color: "orange",
-    },
-    {
-      id: "lat",
-      title: "LAT",
-      subtitle: "Law Admission Test",
-      image: "/src/assets/LAT.jpg",
-      date: "2026-05-10",
-      duration: "180 minutes",
-      universities: "60+",
-      subjectsCount: "5 Subjects",
-      subjects: ["English", "Urdu", "Pak Studies", "Math", "General Knowledge"],
-      color: "blue",
-    },
-    {
-      id: "sat",
-      title: "SAT",
-      subtitle: "Scholastic Aptitude Test",
-      image: "/src/assets/SAT.jpg",
-      date: "2026-03-28",
-      duration: "120 minutes",
-      universities: "20+",
-      subjectsCount: "3 Subjects",
-      subjects: ["Verbal Reasoning", "Quantitative", "Analytical"],
-      color: "purple",
-    },
-  ];
+
+  useEffect(() => {
+    // Fetch exams data from API when component mounts
+    const fetchExams = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(`http://localhost:3000/api/exam`);
+        if (response.data && response.data.success) {
+          setExams(response.data.exams);
+        }
+      } catch (error) {
+        if (error.response && error.response.data) {
+          const { message } = error.response.data;
+          setError(message);
+          console.error("Unexpected error:", message);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchExams();
+  }, []);
+
+  // helper: parse date string to Date or null
+  const parseDate = (d) => {
+    if (!d) return null;
+    const parsed = new Date(d);
+    return isNaN(parsed.getTime()) ? null : parsed;
+  };
+
+  // compute display date and registration tag for an exam
+  const computeDeadlineInfo = (exam) => {
+    const now = new Date();
+    const testDate = parseDate(exam.testDate);
+    // allow exam.applicationDeadline from API; otherwise default 14 days before test
+    const applicationDeadline =
+      parseDate(exam.applicationDeadline) ||
+      (testDate
+        ? new Date(testDate.getTime() - 14 * 24 * 60 * 60 * 1000)
+        : null);
+
+    if (applicationDeadline && applicationDeadline >= now) {
+      return {
+        label: "Application Deadline",
+        date: applicationDeadline,
+        tag: "Registration Open",
+      };
+    }
+
+    if (
+      (!applicationDeadline || applicationDeadline < now) &&
+      testDate &&
+      testDate >= now
+    ) {
+      return { label: "Test Date", date: testDate, tag: "Registration Closed" };
+    }
+
+    return { label: "Coming Soon", date: null, tag: "Coming Soon" };
+  };
+
+  const formatDate = (d) => {
+    if (!d) return "Coming Soon";
+    try {
+      return d.toISOString().split("T")[0];
+    } catch (e) {
+      return String(d);
+    }
+  };
+
+  // Upcoming deadlines: exams with a display date in future/present
+  const upcoming = exams
+    .map((ex) => ({ exam: ex, info: computeDeadlineInfo(ex) }))
+    .filter(({ info }) => info.date && info.date >= new Date())
+    .sort((a, b) => a.info.date - b.info.date)
+    .slice(0, 4);
+
   return (
     <div className=" bg-white w-full flex flex-col">
       <div className="home-hero ">
@@ -152,127 +154,151 @@ const Exam = () => {
         </div>
       </div>
       <div>
-        <section className=" py-12 deadlines-wrapper max-w-6xl mx-auto px-6 pb-16">
-          <div className="deadlines-card bg-white rounded-lg shadow-md p-4">
-            <div className="deadlines-head flex items-center justify-between mb-6">
-              <div className="flex justify-center items-center gap-2">
-                <MdOutlineDateRange className="text-orange-500 text-2xl" />
-                <h4 className="text-xl font-semibold "> Upcoming Deadlines</h4>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-              <div className="deadline-card p-4 rounded-md bg-amber-50">
-                <div className="font-semibold">ECAT</div>
-                <div className="text-xs text-gray-600">
-                  Registration Deadline
-                </div>
-                <div className="mt-2 text-sm font-medium text-amber-700 ">
-                  2026-02-30
-                </div>
-                <div className="mt-3 text-xs text-center text-white bg-orange-500 border rounded-2xl w-20">
-                  15 days
-                </div>
-              </div>
-
-              <div className="deadline-card p-4 rounded-md bg-amber-50">
-                <div className="font-semibold">MDCAT</div>
-                <div className="text-xs text-gray-600">
-                  Application Deadline
-                </div>
-                <div className="mt-2 text-sm font-medium text-amber-700 ">
-                  2026-01-25
-                </div>
-                <div className="mt-3 text-xs text-center text-white bg-orange-500 border rounded-2xl w-20">
-                  40 days
-                </div>
-              </div>
-
-              <div className="deadline-card p-4 rounded-md bg-amber-50">
-                <div className="font-semibold">GAT</div>
-                <div className="text-xs text-gray-600">Registration Opens</div>
-                <div className="mt-2 text-sm font-medium text-amber-700 ">
-                  2025-08-15
-                </div>
-                <div className="mt-3 text-xs text-center text-white bg-orange-500 border rounded-2xl w-20">
-                  61 days
-                </div>
-              </div>
-
-              <div className="deadline-card p-4 rounded-md bg-amber-50">
-                <div className="font-semibold">CSS</div>
-                <div className="text-xs text-gray-600">Form Submission</div>
-                <div className="mt-2 text-sm text-amber-700 font-medium">
-                  2025-09-01
-                </div>
-                <div className="mt-3 text-xs text-center text-white bg-orange-500 border rounded-2xl w-20">
-                  78 days
-                </div>
-              </div>
-            </div>
+        {isLoading ? (
+          <div className="flex-1 flex justify-center items-center py-16">
+            <p className="text-sky-950 text-lg">Loading exams...</p>
           </div>
-        </section>
-      </div>
-      <section className="categories-section max-w-6xl mx-auto px-6 pb-16">
-        <h3 className="text-2xl text-center font-semibold mb-6">
-          Choose Your{" "}
-          <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
-            Examination Category
-          </span>
-        </h3>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {exams.map((exam) => (
-            <div
-              key={exam.id}
-              className="exam-card bg-white rounded-lg overflow-hidden shadow"
-            >
-              <div
-                className={`exam-image h-36 bg-[url('${exam.image}')] bg-cover bg-center`}
-              ></div>
-              <div className="p-4">
-                <h4 className="font-semibold">{exam.title}</h4>
-                <div className={`text-sm text-${exam.color}-500`}>
-                  {exam.subtitle}
-                </div>
-                <div className="mt-3 text-xs text-gray-600 grid grid-cols-2 gap-4">
-                  <div className="flex items-center gap-1">
-                    <MdOutlineDateRange className="text-xl" />
-                    <span>{exam.date}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <MdOutlineAccessTime className="text-xl" />
-                    <span>{exam.duration}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <LuGraduationCap className="text-xl" />
-                    <span>{exam.universities}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <BsFileEarmarkText className="text-xl" />
-                    <span>{exam.subjectsCount}</span>
+        ) : error ? (
+          <div className="flex-1 flex justify-center items-center">
+            <p className="text-red-500 text-lg">{error}</p>
+          </div>
+        ) : (
+          <>
+            <section className="py-12 deadlines-wrapper max-w-6xl mx-auto px-6 pb-16">
+              <div className="deadlines-card bg-white rounded-lg shadow-md p-4">
+                <div className="deadlines-head flex items-center justify-between mb-6">
+                  <div className="flex justify-center items-center gap-2">
+                    <MdOutlineDateRange className="text-orange-500 text-2xl" />
+                    <h4 className="text-xl font-semibold ">
+                      {" "}
+                      Upcoming Deadlines
+                    </h4>
                   </div>
                 </div>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {exam.subjects.map((subject) => (
-                    <span
-                      key={subject}
-                      className={`px-3 py-1 bg-${exam.color}-50  text-xs rounded-xl text-${exam.color}-500`}
-                    >
-                      {subject}
-                    </span>
-                  ))}
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                  {upcoming.length === 0 ? (
+                    <div className="col-span-1 text-center text-gray-600">
+                      No upcoming deadlines
+                    </div>
+                  ) : (
+                    upcoming.map(({ exam: ex, info }) => {
+                      const daysLeft = info.date
+                        ? Math.ceil(
+                            (info.date - new Date()) / (1000 * 60 * 60 * 24)
+                          )
+                        : null;
+                      return (
+                        <div
+                          key={ex.id}
+                          className="deadline-card p-4 rounded-md bg-amber-50"
+                        >
+                          <div className="font-semibold">{ex.title}</div>
+                          <div className="text-xs text-gray-600">
+                            {info.label}
+                          </div>
+                          <div className="mt-2 text-sm font-medium text-amber-700 ">
+                            {formatDate(info.date)}
+                          </div>
+                          <div className="mt-3 text-xs text-center text-white bg-orange-500 border rounded-2xl w-20">
+                            {daysLeft !== null ? `${daysLeft} days` : "-"}
+                          </div>
+                        </div>
+                      );
+                    })
+                  )}
                 </div>
-                <button
-                  className="mt-4 w-full py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg flex justify-center items-center gap-2 "
-                  onClick={() => navigate(`/exam/${exam.id}`)}
-                >
-                  View Details <FaArrowRight />
-                </button>
               </div>
-            </div>
-          ))}
-        </div>
-      </section>
+            </section>
+
+            <section className="categories-section max-w-6xl mx-auto px-6 pb-16">
+              <h3 className="text-2xl text-center font-semibold mb-6">
+                Choose Your{" "}
+                <span className="bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent">
+                  Examination Category
+                </span>
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {exams.map((exam) => (
+                  <div
+                    key={exam.id}
+                    className="exam-card bg-white rounded-lg overflow-hidden shadow"
+                  >
+                    <div className="relative h-36 bg-gradient-to-br from-gray-700 to-gray-900">
+                      <img
+                        src={exam.image}
+                        alt={exam.title}
+                        className="w-full h-full object-cover"
+                      />
+                      {/* registration badge on image */}
+                      {(() => {
+                        const info = computeDeadlineInfo(exam);
+                        return (
+                          <div className="absolute top-2 right-2">
+                            <span
+                              className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                                info.tag === "Registration Open"
+                                  ? "bg-green-600 text-white"
+                                  : info.tag === "Registration Closed"
+                                  ? "bg-red-600 text-white"
+                                  : "bg-gray-500 text-white"
+                              }`}
+                            >
+                              {info.tag}
+                            </span>
+                          </div>
+                        );
+                      })()}
+                    </div>
+                    <div className="p-4">
+                      <h4 className="font-semibold">{exam.title}</h4>
+                      <div className={`text-sm text-${exam.color}-500`}>
+                        {exam.subtitle}
+                      </div>
+                      <div className="mt-3 text-xs text-gray-600 grid grid-cols-2 gap-4">
+                        <div className="flex items-center gap-1">
+                          <MdOutlineDateRange className="text-xl" />
+                          <span>
+                            {formatDate(computeDeadlineInfo(exam).date)}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <MdOutlineAccessTime className="text-xl" />
+                          <span>{exam.duration}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <LuGraduationCap className="text-xl" />
+                          <span>{exam.universities}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <BsFileEarmarkText className="text-xl" />
+                          <span>{exam.subjectsCount}</span>
+                        </div>
+                      </div>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {exam.subjects.map((subject) => (
+                          <span
+                            key={subject}
+                            className={`px-3 py-1 bg-${exam.color}-50  text-xs rounded-xl text-${exam.color}-500`}
+                          >
+                            {subject}
+                          </span>
+                        ))}
+                      </div>
+                      <button
+                        className="mt-4 w-full py-2 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-lg flex justify-center items-center gap-2 "
+                        onClick={() => navigate(`/exam/${exam.id}`)}
+                      >
+                        View Details <FaArrowRight />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          </>
+        )}
+      </div>
     </div>
   );
 };
