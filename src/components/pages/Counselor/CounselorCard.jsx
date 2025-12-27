@@ -44,7 +44,9 @@ const CounselorCard = ({ counselor }) => {
       </div>
 
       {/* Description */}
-      <p className="text-gray-600 text-sm mt-3">{counselor.description}</p>
+      <p className="text-gray-600 text-sm mt-3 text-justify">
+        {counselor.description}
+      </p>
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-4 mt-4 text-center">
