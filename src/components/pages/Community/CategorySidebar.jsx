@@ -1,19 +1,28 @@
 import { Search } from "lucide-react";
 
-const categories = [
-  { name: "All Discussions", count: 1250 },
-  { name: "Universities", count: 450 },
-  { name: "Exam Prep", count: 380 },
-  { name: "Career Guidance", count: 320 },
-  { name: "General", count: 100 },
-];
-
 const CategorySidebar = ({
+  discussions,
   searchTerm,
   setSearchTerm,
   selectedCategory,
   setSelectedCategory,
 }) => {
+  // Compute category counts dynamically
+  const categoryCounts = discussions.reduce(
+    (acc, discussion) => {
+      const category = discussion.category || "General";
+      acc[category] = (acc[category] || 0) + 1;
+      acc["All Discussions"] += 1;
+      return acc;
+    },
+    { "All Discussions": 0 }
+  );
+
+  const categories = Object.keys(categoryCounts).map((name) => ({
+    name,
+    count: categoryCounts[name],
+  }));
+
   return (
     <div className="bg-white rounded-xl border p-4 space-y-4">
       {/* Search */}

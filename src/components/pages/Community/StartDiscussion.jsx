@@ -1,3 +1,4 @@
+import { getTokenUser } from "@/auth/authService";
 import { ArrowLeft, Send } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -5,12 +6,12 @@ import { useNavigate } from "react-router-dom";
 const StartDiscussion = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: "",
     title: "",
     description: "",
     tag: "",
     category: "General",
   });
+  const user = getTokenUser();
 
   const categories = [
     "Universities",
@@ -35,50 +36,31 @@ const StartDiscussion = () => {
       .filter((tag) => tag.length > 0);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate form
-    if (
-      !formData.username.trim() ||
-      !formData.title.trim() ||
-      !formData.description.trim()
-    ) {
+    if (!formData.title.trim() || !formData.description.trim()) {
       alert("Please fill in all required fields");
       return;
     }
 
-    // Process tags: split by comma, trim, and filter out empty ones
-    const tags = formData.tag
-      .split(",")
-      .map((tag) => tag.trim())
-      .filter((tag) => tag.length > 0);
+    try {
+      await fetch("http://localhost:3000/api/discussion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: formData.title,
+          description: formData.description,
+          category: formData.category,
+          tags: getParsedTags(),
+          author: user.name,
+        }),
+      });
 
-    // Create new discussion object
-    const newDiscussion = {
-      id: Date.now(), // Simple ID generation
-      title: formData.title.trim(),
-      category: formData.category,
-      tags: tags,
-      author: formData.username.trim(),
-      time: "Just now",
-      likes: 0,
-      views: 0,
-      comments: 0,
-      featured: false,
-      commentsList: [],
-    };
-
-    // In a real app, this would be sent to a backend API
-    // For now, we'll store it in localStorage to persist across page reloads
-    const existingDiscussions = JSON.parse(
-      localStorage.getItem("discussions") || "[]"
-    );
-    const updatedDiscussions = [newDiscussion, ...existingDiscussions];
-    localStorage.setItem("discussions", JSON.stringify(updatedDiscussions));
-
-    // Navigate back to community
-    navigate("/community");
+      navigate("/community");
+    } catch (err) {
+      alert("Failed to create discussion");
+    }
   };
 
   return (
@@ -106,26 +88,6 @@ const StartDiscussion = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Username */}
-            <div>
-              <label
-                htmlFor="username"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Username *
-              </label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleInputChange}
-                placeholder="Enter your username"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                required
-              />
-            </div>
-
             {/* Title */}
             <div>
               <label

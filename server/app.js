@@ -8,6 +8,7 @@ const { userRouter } = require("./routes/userRoutes.js");
 const { universityRouter } = require("./routes/universityRoutes.js");
 const { examRouter } = require("./routes/examRoutes.js");
 const { counselorRouter } = require("./routes/counselorRoutes.js");
+const { discussionRouter } = require("./routes/discussionRoutes.js");
 
 // middleware to parse incoming requests
 app.use(
@@ -25,6 +26,7 @@ app.use("/api/user", userRouter);
 app.use("/api/university", universityRouter);
 app.use("/api/exam", examRouter);
 app.use("/api/counselor", counselorRouter);
+app.use("/api/discussion", discussionRouter);
 
 // Server setup
 const host = "localhost";
