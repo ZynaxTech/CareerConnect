@@ -1,11 +1,18 @@
+import { getAccessToken, getTokenUser } from "@/auth/authService";
+import axios from "axios";
 import { Clock, Copy, DollarSign, Mail, X } from "lucide-react";
 import { useState } from "react";
+import { RiLoader3Fill } from "react-icons/ri";
+import { toast } from "sonner";
 
 const BookingModal = ({ counselor, isOpen, onClose }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedDay, setSelectedDay] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedService, setSelectedService] = useState("");
   const [selectedSessionType, setSelectedSessionType] = useState("");
+  const user = getTokenUser();
+  const accessToken = getAccessToken();
 
   const availableDays = [
     "Monday",
@@ -52,16 +59,37 @@ Estimated Cost: PKR ${estimatedCost} (1 hour session)
 Please confirm my booking and provide further instructions.
 
 Best regards,
-[Your Name]
-[Your Contact Information]
-[Your Email Address]`;
+${user.name}
+${user.email}`;
   };
 
-  const handleEmailCounselor = () => {
-    const subject = encodeURIComponent(generateEmailSubject());
-    const body = encodeURIComponent(generateEmailBody());
-    const mailtoLink = `mailto:${counselor.email}?subject=${subject}&body=${body}`;
-    window.open(mailtoLink);
+  const handleEmailCounselor = async () => {
+    setIsLoading(true);
+
+    const subject = generateEmailSubject();
+    const body = generateEmailBody();
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/api/counselor/send-booking-email",
+        { subject, body, email: user.email },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+      if (response.data && response.data.success)
+        toast.success(response.data.message);
+    } catch (error) {
+      if (error.response && error.response.data) {
+        const { message } = error.response.data;
+        toast.error(message);
+        console.error("Unexpected error:", message);
+      } else console.error("Email not sent Error:", error);
+    } finally {
+      setIsLoading(false);
+      onClose();
+    }
   };
 
   const handleCopySubject = () => {
@@ -250,10 +278,24 @@ Best regards,
               {/* Email Button */}
               <button
                 onClick={handleEmailCounselor}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+                className={`w-full py-3 px-4 rounded-lg font-medium transition-colors flex items-center justify-center gap-2 ${
+                  isLoading
+                    ? "bg-gray-500 text-gray-300 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
+                }`}
+                disabled={isLoading}
               >
-                <Mail size={18} />
-                Email Counselor
+                {isLoading ? (
+                  <>
+                    <RiLoader3Fill className="text-xl animate-spin" />
+                    <span>Sending email...</span>
+                  </>
+                ) : (
+                  <>
+                    <Mail size={18} />
+                    <span>Email Counselor</span>
+                  </>
+                )}
               </button>
             </div>
           )}

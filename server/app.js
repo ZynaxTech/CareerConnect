@@ -7,6 +7,7 @@ const app = express();
 const { userRouter } = require("./routes/userRoutes.js");
 const { universityRouter } = require("./routes/universityRoutes.js");
 const { examRouter } = require("./routes/examRoutes.js");
+const { counselorRouter } = require("./routes/counselorRoutes.js");
 
 // middleware to parse incoming requests
 app.use(
@@ -23,6 +24,7 @@ app.use("/uploads", express.static("uploads"));
 app.use("/api/user", userRouter);
 app.use("/api/university", universityRouter);
 app.use("/api/exam", examRouter);
+app.use("/api/counselor", counselorRouter);
 
 // Server setup
 const host = "localhost";
