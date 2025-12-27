@@ -16,7 +16,7 @@ const Footer = () => {
   return (
     <footer className="bg-[#F9F9F9] w-full">
       {/* Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-[1400px] mx-auto px-6 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
           {/* Company Info */}
           <div className="lg:col-span-2">
@@ -146,9 +146,11 @@ const Footer = () => {
               Contact Info
             </h4>
             <div className="space-y-3 mb-6">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <Mail size={16} className="text-gray-500" />
-                <span className="text-gray-600">careerconnect@gmail.com</span>
+                <span className="text-gray-600 break-all">
+                  careerconnect@gmail.com
+                </span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone size={16} className="text-gray-500" />

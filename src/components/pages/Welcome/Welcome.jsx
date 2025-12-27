@@ -37,6 +37,7 @@ const Welcome = () => {
       </div>
       <div className="sides right-side bg-gray-900">
         <img
+          className="logo-glow"
           src={careerConnectLogo}
           alt="Career Connect Logo"
           height={270}
