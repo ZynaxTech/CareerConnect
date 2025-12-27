@@ -6,7 +6,7 @@ const verifyToken = async (req, res, next) => {
   if (!token)
     return res
       .status(401)
-      .json({ success: false, message: "Access token is mission or invalid" });
+      .json({ success: false, message: "Access token is missing or invalid" });
   try {
     jwt.verify(token, process.env.SECRET_KEY, async (err, decoded) => {
       if (err) {

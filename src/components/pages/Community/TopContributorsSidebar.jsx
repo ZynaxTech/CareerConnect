@@ -1,44 +1,50 @@
-import { FileText, MessageSquare, Trophy } from "lucide-react";
+import { FileText, MessageSquare, ThumbsUp, Trophy } from "lucide-react";
 
 const TopContributorsSidebar = ({ discussions }) => {
-  // Calculate contributors based on discussions and comments
-  const contributors = {};
+  const contributorsMap = {};
 
-  // Count discussions per author
   discussions.forEach((discussion) => {
-    if (!contributors[discussion.author]) {
-      contributors[discussion.author] = {
-        name: discussion.author,
-        discussions: 0,
+    const { author, likes, commentsList = [] } = discussion;
+
+    // Initialize post author
+    if (!contributorsMap[author]) {
+      contributorsMap[author] = {
+        name: author,
+        posts: 0,
         comments: 0,
-        total: 0,
+        likes: 0,
+        score: 0,
       };
     }
-    contributors[discussion.author].discussions += 1;
-    contributors[discussion.author].total += 1;
+
+    // Post stats
+    contributorsMap[author].posts += 1;
+    contributorsMap[author].likes += likes || 0;
+
+    // Comment stats
+    commentsList.forEach((comment) => {
+      if (!contributorsMap[comment.author]) {
+        contributorsMap[comment.author] = {
+          name: comment.author,
+          posts: 0,
+          comments: 0,
+          likes: 0,
+          score: 0,
+        };
+      }
+      contributorsMap[comment.author].comments += 1;
+    });
   });
 
-  // Count comments per author
-  discussions.forEach((discussion) => {
-    if (discussion.commentsList) {
-      discussion.commentsList.forEach((comment) => {
-        if (!contributors[comment.author]) {
-          contributors[comment.author] = {
-            name: comment.author,
-            discussions: 0,
-            comments: 0,
-            total: 0,
-          };
-        }
-        contributors[comment.author].comments += 1;
-        contributors[comment.author].total += 1;
-      });
-    }
-  });
+  // Calculate score
+  const contributors = Object.values(contributorsMap).map((user) => ({
+    ...user,
+    score: user.posts * 3 + user.comments * 2 + user.likes * 1,
+  }));
 
-  // Get top 3 contributors sorted by total contributions
-  const topContributors = Object.values(contributors)
-    .sort((a, b) => b.total - a.total)
+  // Sort & take top 3
+  const topContributors = contributors
+    .sort((a, b) => b.score - a.score)
     .slice(0, 3);
 
   return (
@@ -50,12 +56,9 @@ const TopContributorsSidebar = ({ discussions }) => {
         </h3>
       </div>
 
-      <div className="space-y-3">
-        {topContributors.map((contributor, index) => (
-          <div
-            key={contributor.name}
-            className="flex items-center justify-between"
-          >
+      <div className="space-y-4">
+        {topContributors.map((user, index) => (
+          <div key={user.name} className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div
                 className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
@@ -68,24 +71,26 @@ const TopContributorsSidebar = ({ discussions }) => {
               >
                 {index + 1}
               </div>
+
               <div>
-                <p className="text-sm font-medium text-gray-900">
-                  {contributor.name}
-                </p>
+                <p className="text-sm font-medium text-gray-900">{user.name}</p>
+
                 <div className="flex items-center gap-3 text-xs text-gray-500">
                   <span className="flex items-center gap-1">
-                    <FileText size={12} />
-                    {contributor.discussions}
+                    <FileText size={12} /> {user.posts}
                   </span>
                   <span className="flex items-center gap-1">
-                    <MessageSquare size={12} />
-                    {contributor.comments}
+                    <MessageSquare size={12} /> {user.comments}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <ThumbsUp size={12} /> {user.likes}
                   </span>
                 </div>
               </div>
             </div>
-            <span className="text-xs font-medium text-gray-600">
-              {contributor.total}
+
+            <span className="text-xs font-semibold text-gray-400">
+              {user.score}
             </span>
           </div>
         ))}

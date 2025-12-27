@@ -1,7 +1,7 @@
 import { Search } from "lucide-react";
-import { useMemo, useState } from "react";
-import { counselors } from "./Counselor";
+import { useEffect, useMemo, useState } from "react";
 import CounselorCard from "./CounselorCard";
+import axios from "axios";
 
 const Counselors = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -10,6 +10,31 @@ const Counselors = () => {
   );
   const [selectedRating, setSelectedRating] = useState("All Ratings");
   const [sortBy, setSortBy] = useState("Sort by Rating");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState();
+  const [counselors, setCounselors] = useState([]);
+
+  useEffect(() => {
+    // Fetch counselors data from API when component mounts
+    const fetchCounselors = async () => {
+      setIsLoading(true);
+      try {
+        const response = await axios.get(`http://localhost:3000/api/counselor`);
+        if (response.data && response.data.success) {
+          setCounselors(response.data.counselors);
+        }
+      } catch (error) {
+        if (error.response && error.response.data) {
+          const { message } = error.response.data;
+          setError(message);
+          console.error("Unexpected error:", message);
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCounselors();
+  }, []);
 
   const filteredCounselors = useMemo(() => {
     let filtered = counselors.filter((counselor) => {
@@ -57,7 +82,7 @@ const Counselors = () => {
     });
 
     return filtered;
-  }, [searchTerm, selectedSpecialization, selectedRating, sortBy]);
+  }, [counselors, searchTerm, selectedSpecialization, selectedRating, sortBy]);
 
   return (
     <div className="bg-white min-h-screen pb-6">
@@ -132,11 +157,23 @@ const Counselors = () => {
         </div>
 
         {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {filteredCounselors.map((counselor) => (
-            <CounselorCard key={counselor.id} counselor={counselor} />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="flex-1 flex justify-center items-center py-16">
+            <p className="text-sky-950 text-lg">Loading counselors...</p>
+          </div>
+        ) : error ? (
+          <div className="flex-1 flex justify-center items-center">
+            <p className="text-red-500 text-lg">{error}</p>
+          </div>
+        ) : (
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {filteredCounselors.map((counselor) => (
+                <CounselorCard key={counselor.id} counselor={counselor} />
+              ))}
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
