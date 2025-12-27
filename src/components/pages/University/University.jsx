@@ -8,11 +8,12 @@ import { FiGrid, FiList, FiSearch } from "react-icons/fi";
 import { GoPeople } from "react-icons/go";
 import { GrLocation } from "react-icons/gr";
 import { LuDollarSign } from "react-icons/lu";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import "./University.css";
 
 const University = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [filters, setFilters] = useState({
     search: "",
     location: "All Locations",
@@ -25,6 +26,17 @@ const University = () => {
   const [sortBy, setSortBy] = useState("ranking");
   const [universities, setUniversities] = useState([]);
   const accessToken = getAccessToken();
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setFilters({
+      search: params.get("search") || "",
+      location: params.get("location") || "All Locations",
+      type: params.get("type") ? params.get("type").split(",") : [],
+      feeRange: params.get("feeRange") ? params.get("feeRange").split(",") : [],
+    });
+    setSortBy(params.get("sortBy") || "ranking");
+  }, [location.search]);
 
   useEffect(() => {
     // Fetch universities data from API when component mounts
@@ -56,16 +68,41 @@ const University = () => {
   }, []);
 
   const handleFilterChange = (key, value) => {
+    let updatedFilters;
+
     if (key === "type" || key === "feeRange") {
-      setFilters({
+      const currentArray = filters[key];
+      updatedFilters = {
         ...filters,
-        [key]: filters[key].includes(value)
-          ? filters[key].filter((item) => item !== value)
-          : [...filters[key], value],
-      });
+        [key]: currentArray.includes(value)
+          ? currentArray.filter((item) => item !== value)
+          : [...currentArray, value],
+      };
     } else {
-      setFilters({ ...filters, [key]: value });
+      updatedFilters = { ...filters, [key]: value };
     }
+
+    setFilters(updatedFilters);
+
+    const params = new URLSearchParams();
+    if (updatedFilters.search) params.set("search", updatedFilters.search);
+    if (updatedFilters.location && updatedFilters.location !== "All Locations")
+      params.set("location", updatedFilters.location);
+    if (updatedFilters.type.length)
+      params.set("type", updatedFilters.type.join(","));
+    if (updatedFilters.feeRange.length)
+      params.set("feeRange", updatedFilters.feeRange.join(","));
+    if (sortBy) params.set("sortBy", sortBy);
+
+    navigate(`?${params.toString()}`, { replace: true });
+  };
+
+  const handleSortChange = (value) => {
+    setSortBy(value);
+
+    const params = new URLSearchParams(location.search);
+    params.set("sortBy", value);
+    navigate(`?${params.toString()}`, { replace: true });
   };
 
   // Helper function to parse fee string to number
@@ -276,7 +313,7 @@ const University = () => {
                     <select
                       className="px-3 py-2 bg-gray-800 text-white text-sm rounded border border-gray-700 focus:outline-none"
                       value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
+                      onChange={(e) => handleSortChange(e.target.value)}
                     >
                       <option value="ranking">Sort by Ranking</option>
                       <option value="rating">Sort by Rating</option>

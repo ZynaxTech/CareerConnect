@@ -1,9 +1,12 @@
+import axios from "axios";
 import { Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import CounselorCard from "./CounselorCard";
-import axios from "axios";
+import { useLocation, useNavigate } from "react-router-dom";
+import CounselorCard from "./CounselorCard.jsx";
 
 const Counselors = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSpecialization, setSelectedSpecialization] = useState(
     "All Specializations"
@@ -13,6 +16,16 @@ const Counselors = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
   const [counselors, setCounselors] = useState([]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setSearchTerm(params.get("search") || "");
+    setSelectedSpecialization(
+      params.get("specialization") || "All Specializations"
+    );
+    setSelectedRating(params.get("rating") || "All Ratings");
+    setSortBy(params.get("sort") || "Sort by Rating");
+  }, [location.search]);
 
   useEffect(() => {
     // Fetch counselors data from API when component mounts
@@ -35,6 +48,74 @@ const Counselors = () => {
     };
     fetchCounselors();
   }, []);
+
+  const handleSearchChange = (value) => {
+    setSearchTerm(value);
+    const params = new URLSearchParams(location.search);
+
+    if (value) params.set("search", value);
+    else params.delete("search");
+
+    if (selectedSpecialization !== "All Specializations") {
+      params.set("specialization", selectedSpecialization);
+    } else {
+      params.delete("specialization");
+    }
+
+    if (selectedRating !== "All Ratings") {
+      params.set("rating", selectedRating);
+    } else {
+      params.delete("rating");
+    }
+
+    navigate(`?${params.toString()}`, { replace: true });
+  };
+
+  const handleSpecializationChange = (value) => {
+    setSelectedSpecialization(value);
+    const params = new URLSearchParams(location.search);
+
+    if (searchTerm) params.set("search", searchTerm);
+
+    if (value !== "All Specializations") params.set("specialization", value);
+    else params.delete("specialization");
+
+    if (selectedRating !== "All Ratings") params.set("rating", selectedRating);
+    else params.delete("rating");
+
+    navigate(`?${params.toString()}`, { replace: true });
+  };
+
+  const handleRatingChange = (value) => {
+    setSelectedRating(value);
+    const params = new URLSearchParams(location.search);
+
+    if (searchTerm) params.set("search", searchTerm);
+
+    if (selectedSpecialization !== "All Specializations")
+      params.set("specialization", selectedSpecialization);
+    else params.delete("specialization");
+
+    if (value !== "All Ratings") params.set("rating", value);
+    else params.delete("rating");
+
+    navigate(`?${params.toString()}`, { replace: true });
+  };
+
+  const handleSortChange = (value) => {
+    setSortBy(value);
+
+    const params = new URLSearchParams(location.search);
+
+    if (searchTerm) params.set("search", searchTerm);
+    if (selectedSpecialization !== "All Specializations")
+      params.set("specialization", selectedSpecialization);
+    if (selectedRating !== "All Ratings") params.set("rating", selectedRating);
+    if (value !== "Sort by Rating") params.set("sort", value);
+    else params.delete("sort");
+
+    navigate(`?${params.toString()}`, { replace: true });
+  };
 
   const filteredCounselors = useMemo(() => {
     let filtered = counselors.filter((counselor) => {
@@ -109,14 +190,14 @@ const Counselors = () => {
               placeholder="Search counselors by name or expertise..."
               className="w-full pl-10 pr-3 py-3 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => handleSearchChange(e.target.value)}
             />
           </div>
 
           <select
             className="border rounded-lg px-4 py-2"
             value={selectedSpecialization}
-            onChange={(e) => setSelectedSpecialization(e.target.value)}
+            onChange={(e) => handleSpecializationChange(e.target.value)}
           >
             <option>All Specializations</option>
             <option>Admissions</option>
@@ -131,7 +212,7 @@ const Counselors = () => {
           <select
             className="border rounded-lg px-4 py-2"
             value={selectedRating}
-            onChange={(e) => setSelectedRating(e.target.value)}
+            onChange={(e) => handleRatingChange(e.target.value)}
           >
             <option>All Ratings</option>
             <option>4.5+</option>
@@ -148,7 +229,7 @@ const Counselors = () => {
           <select
             className="border rounded-lg px-3 py-2 text-sm"
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value)}
+            onChange={(e) => handleSortChange(e.target.value)}
           >
             <option>Sort by Rating</option>
             <option>Price: Low to High</option>

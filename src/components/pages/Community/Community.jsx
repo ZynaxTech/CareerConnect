@@ -1,18 +1,25 @@
+import axios from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { RiPushpin2Line } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import CategorySidebar from "./CategorySidebar";
 import DiscussionCard from "./DiscussionCard";
 import TopContributorsSidebar from "./TopContributorsSidebar";
-import axios from "axios";
 
 const Community = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Discussions");
   const [discussionsData, setDiscussionsData] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setSearchTerm(params.get("search") || "");
+    setSelectedCategory(params.get("category") || "All Discussions");
+  }, [location.search]);
 
   useEffect(() => {
     const fetchDiscussions = async () => {
@@ -29,6 +36,33 @@ const Community = () => {
 
     fetchDiscussions();
   }, []);
+
+  const handleSearchChange = (value) => {
+    setSearchTerm(value);
+
+    const params = new URLSearchParams(location.search);
+    if (value) params.set("search", value);
+    else params.delete("search");
+
+    if (selectedCategory && selectedCategory !== "All Discussions")
+      params.set("category", selectedCategory);
+    else params.delete("category");
+
+    navigate(`?${params.toString()}`, { replace: true });
+  };
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+
+    const params = new URLSearchParams(location.search);
+    if (searchTerm) params.set("search", searchTerm);
+
+    if (category && category !== "All Discussions")
+      params.set("category", category);
+    else params.delete("category");
+
+    navigate(`?${params.toString()}`, { replace: true });
+  };
 
   const filteredDiscussions = useMemo(() => {
     return discussionsData.filter((discussion) => {
@@ -79,9 +113,9 @@ const Community = () => {
           <CategorySidebar
             discussions={discussionsData}
             searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
+            setSearchTerm={handleSearchChange}
             selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
+            setSelectedCategory={handleCategoryChange}
           />
           <TopContributorsSidebar discussions={discussionsData} />
         </div>
