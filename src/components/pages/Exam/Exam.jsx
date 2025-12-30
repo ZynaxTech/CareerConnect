@@ -96,7 +96,7 @@ const Exam = () => {
       <div className="home-hero ">
         <div className="mt-16">
           <section className="stats-section max-w-6xl mx-auto px-6 py-12">
-            <h1 className="text-5xl md:text-6xl font-extrabold leading-tight text-white">
+            <h1 className="text-4xl text-center sm:text-6xl font-extrabold leading-tight text-white">
               Governement Examination Portal
             </h1>
             <p className="text-gray-400 text-center mt-2">
