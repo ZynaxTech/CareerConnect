@@ -1,23 +1,21 @@
-import { Link } from "react-router-dom";
-import { useState } from "react";
 import {
-  Mail,
-  Phone,
-  MapPin,
-  Send,
   Facebook,
   Instagram,
-  Youtube,
   Linkedin,
+  Mail,
+  MapPin,
+  Phone,
+  Youtube
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import careerConnectLogo from "../../../assets/careerconnect.png";
 
 const Footer = () => {
   return (
     <footer className="bg-[#F9F9F9] w-full">
       {/* Main Footer Content */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+      <div className="xl:max-w-[1400px] lg:max-w-4xl md:max-w-2xl mx-auto px-6 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 xl:gap-8 gap-8 gap-y-10">
           {/* Company Info */}
           <div className="lg:col-span-2">
             <Link
@@ -146,9 +144,11 @@ const Footer = () => {
               Contact Info
             </h4>
             <div className="space-y-3 mb-6">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
                 <Mail size={16} className="text-gray-500" />
-                <span className="text-gray-600">careerconnect@gmail.com</span>
+                <span className="text-gray-600 break-all">
+                  careerconnect@gmail.com
+                </span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone size={16} className="text-gray-500" />
@@ -172,7 +172,7 @@ const Footer = () => {
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex flex-col md:flex-row justify-center items-center gap-4">
             {/* Copyright */}
-            <div className="flex items-center gap-2 text-gray-600 text-sm">
+            <div className="flex items-center gap-2 text-gray-600 text-sm text-center">
               <span>© 2025 CareerConnect. All rights reserved.</span>
             </div>
           </div>

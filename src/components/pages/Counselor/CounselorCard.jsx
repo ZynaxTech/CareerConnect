@@ -1,105 +1,91 @@
 import { Star } from "lucide-react";
-import { useState } from "react";
 import { GoLocation } from "react-icons/go";
+import { useState } from "react";
 import BookingModal from "./BookingModal";
 
 const CounselorCard = ({ counselor }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+
   return (
-    <div className="bg-white rounded-xl shadow-sm border p-5 hover:shadow-md transition">
-      {/* Header */}
-      <div className="flex justify-between items-start">
-        <div className="flex gap-4">
-          <img
-            src={counselor.image}
-            alt={counselor.name}
-            className="w-14 h-14 rounded-full object-cover"
-          />
-
-          <div>
-            <h3 className="font-semibold text-gray-900">{counselor.name}</h3>
-            <p className="text-sm text-gray-500">{counselor.role}</p>
-
-            <div className="flex items-center gap-1 mt-1 text-sm">
-              <Star size={14} className="text-yellow-400 fill-yellow-400" />
-              <span className="font-medium">{counselor.rating}</span>
-              <span className="text-gray-400">
-                ({counselor.reviews} reviews)
-              </span>
+    <>
+      <div className="bg-white rounded-xl border shadow-sm hover:shadow-md transition p-5 flex flex-col">
+        {/* TOP */}
+        <div className="flex flex-col sm:flex-row justify-between gap-4">
+          <div className="flex gap-4">
+            <img
+              src={counselor.image}
+              className="w-14 h-14 rounded-full object-cover"
+            />
+            <div>
+              <h3 className="font-semibold text-gray-900">
+                {counselor.name}
+              </h3>
+              <p className="text-sm text-gray-500">{counselor.role}</p>
+              <div className="flex items-center gap-1 text-sm mt-1">
+                <Star size={14} className="text-yellow-400 fill-yellow-400" />
+                <span>{counselor.rating}</span>
+                <span className="text-gray-400">
+                  ({counselor.reviews})
+                </span>
+              </div>
             </div>
+          </div>
+
+          <p className="text-lg font-semibold">
+            PKR {counselor.price}
+            <span className="text-sm text-gray-500"> / hr</span>
+          </p>
+        </div>
+
+        {/* DESCRIPTION */}
+        <p className="text-sm text-gray-600 mt-4">
+          {counselor.description}
+        </p>
+
+        {/* STATS */}
+        <div className="grid grid-cols-3 gap-3 mt-4 text-center text-sm">
+          <div className="bg-gray-50 pt-3 rounded-lg">
+            <p className="font-semibold">{counselor.experience}</p>
+            <p className="text-xs text-gray-500">Experience</p>
+          </div>
+          <div className="bg-gray-50 p-3 rounded-lg">
+            <p className="font-semibold">{counselor.successRate}</p>
+            <p className="text-xs text-gray-500">Success</p>
+          </div>
+          <div className="bg-gray-50 p-3 rounded-lg">
+            <p className="font-semibold">{counselor.students}</p>
+            <p className="text-xs text-gray-500">Students</p>
           </div>
         </div>
 
-        <p className="text-lg font-semibold text-gray-900">
-          PKR {counselor.price}
-          <span className="text-sm font-normal text-gray-500"> / hour</span>
-        </p>
-      </div>
-
-      {/* Price */}
-      <div className="mt-4 flex justify-between items-center">
-        <span className="text-xs px-4 py-1 rounded-full bg-blue-50 text-blue-600">
-          {counselor.badge}
-        </span>
-      </div>
-
-      {/* Description */}
-      <p className="text-gray-600 text-sm mt-3">{counselor.description}</p>
-
-      {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mt-4 text-center">
-        <div className="bg-gray-50 p-3 rounded-lg">
-          <p className="text-sm font-semibold">{counselor.experience}</p>
-          <p className="text-xs text-gray-500">Experience</p>
-        </div>
-        <div className="bg-gray-50 p-3 rounded-lg">
-          <p className="text-sm font-semibold">{counselor.successRate}</p>
-          <p className="text-xs text-gray-500">Success Rate</p>
-        </div>
-        <div className="bg-gray-50 p-3 rounded-lg">
-          <p className=" text-sm font-semibold">{counselor.students}</p>
-          <p className="text-xs text-gray-500">Students Helped</p>
-        </div>
-      </div>
-
-      {/* Tags */}
-      <div className="mt-4">
-        <p className="text-sm font-medium text-gray-700 mb-2">
-          Services Offered:
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {counselor.tags.map((tag, index) => (
+        {/* TAGS */}
+        <div className="flex flex-wrap gap-2 mt-4">
+          {counselor.tags.map((tag, i) => (
             <span
-              key={index}
-              className="text-xs bg-green-50 text-green-600 px-4 py-1 rounded-full"
+              key={i}
+              className="text-xs bg-green-50 text-green-600 px-3 py-1 rounded-full"
             >
               {tag}
             </span>
           ))}
         </div>
+
+        {/* FOOTER */}
+        <div className="mt-5 flex flex-col sm:flex-row justify-between gap-2">
+          <p className="text-sm text-gray-500 flex items-center gap-1">
+            <GoLocation /> {counselor.location}
+          </p>
+          <button
+            onClick={() => setOpen(true)}
+            className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+          >
+            Book Session
+          </button>
+        </div>
       </div>
 
-      {/* Footer */}
-      <div className="mt-5 flex justify-between items-center">
-        <p className="text-sm text-gray-500 flex items-center gap-2">
-          {" "}
-          <GoLocation /> {counselor.location}
-        </p>
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-lg"
-        >
-          Book Session
-        </button>
-      </div>
-
-      {/* Booking Modal */}
-      <BookingModal
-        counselor={counselor}
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
-    </div>
+      <BookingModal counselor={counselor} isOpen={open} onClose={() => setOpen(false)} />
+    </>
   );
 };
 

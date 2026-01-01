@@ -104,3 +104,15 @@ a {
   filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.5))
     drop-shadow(0 0 40px rgba(247, 84, 238, 0.3));
 }
+
+.badge {
+  @apply flex items-center gap-1 bg-white/20 px-3 py-1 rounded-full;
+}
+
+.card {
+  @apply bg-white rounded-xl p-5 shadow-md;
+}
+
+.section-title {
+  @apply text-lg sm:text-xl font-bold mb-4;
+}

@@ -55,9 +55,9 @@ const Home = () => {
     <div className="home-hero w-full">
       <div className="max-w-6xl mx-auto px-6 py-28">
         <main className="text-center text-white">
-          <h2 className="text-5xl md:text-6xl font-extrabold leading-tight">
+          <h2 className="text-3xl md:text-6xl font-extrabold leading-tight">
             Navigate Your Future with
-            <span className="ml-3 text-blue-400">CareerConnect</span>
+            <span className="text-2xl sm:text-6xl ml-3 text-blue-400">CareerConnect</span>
           </h2>
 
           <p className="mt-6 text-gray-400 max-w-2xl mx-auto">

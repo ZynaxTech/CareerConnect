@@ -72,12 +72,12 @@ const DiscussionCard = ({ discussion }) => {
       </p>
 
       {/* Title */}
-      <h3 className="font-semibold text-gray-900 mb-2  transition-colors">
+      <h3 className="font-semibold text-gray-900 mb-2 break-words transition-colors">
         {discussion.title}
       </h3>
 
       {/* Description */}
-      <p className="text-sm text-gray-600 mb-3">{discussion.description}</p>
+      <p className="text-sm text-gray-600 mb-3 break-words">{discussion.description}</p>
 
       <div className="flex gap-2 flex-wrap mb-3">
         {discussion.tags.map((tag, i) => (
@@ -87,12 +87,12 @@ const DiscussionCard = ({ discussion }) => {
         ))}
       </div>
 
-      <div className="flex justify-between text-sm text-gray-500">
+      <div className="flex max-sm:flex-col gap-3 justify-between text-sm text-gray-500">
         <span>
           {discussion.author} • {timeAgo(discussion.createdAt)}
         </span>
 
-        <div className="flex gap-4">
+        <div className="flex items-center gap-4">
           <button
             onClick={handleLike}
             className={`flex items-center gap-1 transition-colors ${
@@ -105,7 +105,7 @@ const DiscussionCard = ({ discussion }) => {
 
           <button
             onClick={() => setShowComments(!showComments)}
-            className="flex gap-1"
+            className="flex gap-1 items-center hover:text-blue-600 transition-colors"
           >
             <MessageSquare size={14} />
             {commentsCount}

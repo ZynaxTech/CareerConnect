@@ -64,8 +64,8 @@ const StartDiscussion = () => {
   };
 
   return (
-    <div className="bg-gray-50 min-h-screen p-8">
-      <div className="max-w-2xl mx-auto">
+    <div className="bg-gray-50 min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-2xl w-full mx-auto sm:px-0">
         {/* Header */}
         <div className="flex items-center gap-4 mb-6">
           <button
@@ -103,7 +103,7 @@ const StartDiscussion = () => {
                 value={formData.title}
                 onChange={handleInputChange}
                 placeholder="What's your discussion about?"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                className="text-xs sm:text-sm w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                 required
               />
             </div>
@@ -123,7 +123,7 @@ const StartDiscussion = () => {
                 onChange={handleInputChange}
                 placeholder="Provide more details about your discussion..."
                 rows={6}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-vertical"
+                className="text-xs sm:text-sm w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-vertical"
                 required
               />
             </div>
@@ -143,7 +143,7 @@ const StartDiscussion = () => {
                 value={formData.tag}
                 onChange={handleInputChange}
                 placeholder="Add relevant tags separated by commas (optional)"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                className="text-xs sm:text-sm w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
               />
               <p className="text-xs text-gray-500 mt-1">
                 Separate multiple tags with commas
@@ -180,7 +180,7 @@ const StartDiscussion = () => {
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                className="text-xs sm:text-sm w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                 required
               >
                 {categories.map((category) => (
@@ -195,7 +195,7 @@ const StartDiscussion = () => {
             <div className="flex justify-end pt-4">
               <button
                 type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center gap-2"
+                className="text-xs sm:text-sm bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors flex items-center gap-2"
               >
                 <Send size={18} />
                 Start Discussion

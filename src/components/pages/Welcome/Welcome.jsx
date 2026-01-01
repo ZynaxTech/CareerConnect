@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
 import careerConnectLogo from "../../../assets/careerconnect.png";
-import "./Welcome.css";
 
 const Welcome = () => {
   return (
-    <div className="container-layout">
-      <div className="sides h-full relative">
-        <div className="logo-position flex flex-col justify-center items-center">
+    <div className="flex h-screen w-screen max-lg:justify-center max-lg:items-center">
+      <div className="flex flex-1 flex-col max-lg:justify-center max-lg:items-center relative gap-10">
+        <div className="lg:absolute lg:top-6 lg:left-[26px] w-fit flex flex-col justify-center items-center">
           <img
             src={careerConnectLogo}
             alt="Career Connect Logo"
@@ -17,9 +16,9 @@ const Welcome = () => {
             Career Connect
           </h4>
         </div>
-        <div className="home-container">
-          <div className="welcome-content">
-            <p className="font-semibold text-2xl text-sky-950">
+        <div className="h-full md:w-full max-md:max-w-sm flex justify-center items-center px-5 lg:px-0">
+          <div className="flex flex-col justify-center items-center gap-7">
+            <p className="font-semibold text-xl md:text-2xl text-sky-950">
               Join the largest
               <br />
               Community of Pakistani Students
@@ -35,8 +34,9 @@ const Welcome = () => {
           </div>
         </div>
       </div>
-      <div className="sides right-side bg-gray-900">
+      <div className="flex-1 flex-col hidden lg:flex lg:items-center lg:justify-center bg-gray-900">
         <img
+          className="logo-glow"
           src={careerConnectLogo}
           alt="Career Connect Logo"
           height={270}

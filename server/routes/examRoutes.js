@@ -7,6 +7,7 @@ const {
   handlePutUpdateExam,
   handleDeleteExam,
 } = require("../controllers/examController.js");
+const { adminAuth } = require("../middleware/adminAuth.js");
 
 const examRouter = express.Router();
 
@@ -15,8 +16,8 @@ examRouter.get("/", handleGetAllExams);
 examRouter.get("/:id", handleGetExamById);
 
 // Protected (create/update/delete require authentication)
-examRouter.post("/", verifyToken, handlePostCreateExam);
-examRouter.put("/:id", verifyToken, handlePutUpdateExam);
-examRouter.delete("/:id", verifyToken, handleDeleteExam);
+examRouter.post("/", verifyToken, adminAuth, handlePostCreateExam);
+examRouter.put("/:id", verifyToken, adminAuth, handlePutUpdateExam);
+examRouter.delete("/:id", verifyToken, adminAuth, handleDeleteExam);
 
 module.exports = { examRouter };

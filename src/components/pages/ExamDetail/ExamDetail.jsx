@@ -9,182 +9,129 @@ import { LuBuilding } from "react-icons/lu";
 import { PiNewspaperClippingBold } from "react-icons/pi";
 import { SiTicktick, SiWorldhealthorganization } from "react-icons/si";
 import { useParams } from "react-router-dom";
-import "./ExamDetail.css";
 
 const ExamDetail = () => {
   const { id } = useParams();
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
   const [exam, setExam] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    // Fetch exams data from API when component mounts
     const fetchExam = async () => {
       setIsLoading(true);
       try {
-        const response = await axios.get(
-          `http://localhost:3000/api/exam/${id}`
-        );
-        if (response.data && response.data.success) {
-          setExam(response.data.exam);
-        }
-      } catch (error) {
-        if (error.response && error.response.data) {
-          const { message } = error.response.data;
-          setError(message);
-          console.error("Unexpected error:", message);
-        }
+        const res = await axios.get(`http://localhost:3000/api/exam/${id}`);
+        if (res.data?.success) setExam(res.data.exam);
+      } catch (err) {
+        setError("Failed to load exam details");
       } finally {
         setIsLoading(false);
       }
     };
     fetchExam();
-  }, []);
-
-  // helper: parse date string to Date or null
-  const parseDate = (d) => {
-    if (!d) return null;
-    const parsed = new Date(d);
-    return isNaN(parsed.getTime()) ? null : parsed;
-  };
-
-  // compute display date and registration tag for an exam
-  const computeDeadlineInfo = (exam) => {
-    const now = new Date();
-    const testDate = parseDate(exam.testDate);
-    // allow exam.applicationDeadline from API; otherwise default 14 days before test
-    const applicationDeadline =
-      parseDate(exam.applicationDeadline) ||
-      (testDate
-        ? new Date(testDate.getTime() - 14 * 24 * 60 * 60 * 1000)
-        : null);
-
-    if (applicationDeadline && applicationDeadline >= now) {
-      return {
-        label: "Application Deadline",
-        date: applicationDeadline,
-        tag: "Registration Open",
-      };
-    }
-
-    if (
-      (!applicationDeadline || applicationDeadline < now) &&
-      testDate &&
-      testDate >= now
-    ) {
-      return { label: "Test Date", date: testDate, tag: "Registration Closed" };
-    }
-
-    return { label: "Coming Soon", date: null, tag: "Coming Soon" };
-  };
+  }, [id]);
 
   const formatDate = (d) => {
     if (!d) return "Coming Soon";
     try {
-      return d.toISOString().split("T")[0];
-    } catch (e) {
-      return String(d);
+      return new Date(d).toISOString().split("T")[0];
+    } catch {
+      return d;
     }
   };
 
-  const deadlineInfo = computeDeadlineInfo(exam);
+  if (isLoading)
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading exam details...
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="min-h-screen flex items-center justify-center text-red-500">
+        {error}
+      </div>
+    );
 
   return (
-    <div className="w-full flex flex-col bg-white min-h-screen">
-      {/* Hero Section */}
-      <div className="relative h-80 overflow-hidden">
+    <div className="w-full bg-white min-h-screen">
+      {/* HERO */}
+      <div className="relative h-[240px] sm:h-[300px] lg:h-[380px]">
         <img
           src={exam.image}
           alt={exam.title}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70"></div>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="text-center text-white z-10">
-            <h1 className="text-5xl font-bold mb-4">{exam.title}</h1>
-            <p className="text-xl opacity-90">{exam.subtitle}</p>
-            <div className="mt-4 flex items-center justify-center gap-4 text-sm">
-              <span className="bg-white/20 px-3 py-1 rounded-full flex justify-center items-center gap-1">
-                <CiCalendar className="text-orange-300" />{" "}
-                {formatDate(deadlineInfo.date)}
-              </span>
-              <span className="bg-white/20 px-3 py-1 rounded-full flex justify-center items-center gap-1">
-                {" "}
-                <GoClock className="text-blue-300" /> {exam.duration}
-              </span>
-              <span className="bg-white/20 px-3 py-1 rounded-full flex justify-center items-center gap-1">
-                {" "}
-                <GoPeople className="text-red-300" />
-                {exam.universities}
-              </span>
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/80" />
+
+        <div className="absolute inset-0 flex items-center justify-center px-4">
+          <div className="text-center text-white max-w-5xl">
+            <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold">
+              {exam.title}
+            </h1>
+            <p className="mt-2 text-sm sm:text-base lg:text-lg opacity-90">
+              {exam.subtitle}
+            </p>
+
+            <div className="mt-4 flex flex-wrap justify-center gap-3 text-xs sm:text-sm">
+              <Badge icon={<CiCalendar className="text-orange-300" />} value={formatDate(exam.testDate)} />
+              <Badge icon={<GoClock className="text-blue-300"/>} value={exam.duration} />
+              <Badge icon={<GoPeople className="text-red-300" />} value={exam.universities} />
             </div>
           </div>
         </div>
-        {/* Background effects */}
-        <div className="absolute right-0 top-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"></div>
-        <div className="absolute left-0 bottom-0 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl"></div>
       </div>
 
-      {/* Content */}
-      <div className="max-w-6xl mx-auto px-6 py-8 ">
-        {isLoading ? (
-          <div className="flex-1 flex justify-center items-center py-16">
-            <p className="text-sky-950 text-lg">Loading exam details...</p>
-          </div>
-        ) : error ? (
-          <div className="flex-1 flex justify-center items-center">
-            <p className="text-red-500 text-lg">{error}</p>
-          </div>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 ">
-              {/* Main Info */}
-              <div className="lg:col-span-2">
-                <div className="bg-white rounded-lg p-6 shadow-md">
-                  <h2 className="text-2xl font-bold text-black mb-4">
-                    About {exam.title}
-                  </h2>
-                  <p className="text-gray-700 mb-6">{exam.description}</p>
+      {/* CONTENT */}
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-10 max-w-[1440px]">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* MAIN */}
+          <div className="lg:col-span-2 space-y-6">
+            <Card>
+              <SectionTitle>About {exam.title}</SectionTitle>
+              <p className="text-gray-700 leading-relaxed">
+                {exam.description}
+              </p>
 
-                  <div className="grid grid-cols-4 gap-4 mb-6">
-                    <div className="flex flex-col justify-center items-center bg-green-50 p-4 rounded-lg">
-                      <GoPeople className="text-3xl text-green-500" />
-                      <h3 className="font-semibold text-black mt-2">
-                        {exam.universities}
-                      </h3>
-                      <p className="text-gray-700 text-sm"> Universities </p>
-                    </div>
-                    <div className="flex flex-col justify-center items-center bg-purple-50 p-4 rounded-lg">
-                      <BookOpen className="text-3xl text-purple-500" />
-                      <h3 className="font-semibold text-black mt-2">
-                        {exam.subjectsCount}
-                      </h3>
-                      <p className="text-gray-700 text-sm"> Subjects </p>
-                    </div>
-                    <div className="flex flex-col justify-center items-center bg-blue-50 p-4 rounded-lg">
-                      <GoClock className="text-3xl text-blue-500" />
-                      <h3 className="font-semibold text-black mt-2">
-                        {exam.duration}
-                      </h3>
-                      <p className="text-gray-700 text-sm"> Duration </p>
-                    </div>
-                    <div className="flex flex-col justify-center items-center bg-orange-50 p-4 rounded-lg">
-                      <LuBuilding className="text-3xl text-orange-500" />
-                      <h3 className="font-semibold text-black mt-2 ">
-                        {exam.conductingBody}
-                      </h3>
-                      <p className="text-gray-700 text-sm"> Conducting Body </p>
-                    </div>
-                  </div>
+              {/* STATS */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
+                <div className="flex flex-col justify-center items-center bg-green-50 p-4 rounded-lg">
+                  <GoPeople className="text-3xl text-green-500" />
+                  <h3 className=" text-center font-semibold text-black mt-2">
+                    {exam.universities}
+                  </h3>
+                  <p className="text-gray-700 text-sm"> Universities </p>
                 </div>
+                <div className="flex flex-col justify-center items-center bg-purple-50 p-4 rounded-lg">
+                  <BookOpen className="text-3xl text-purple-500" />
+                  <h3 className="text-center font-semibold text-black mt-2">
+                    {exam.subjectsCount}
+                  </h3>
+                  <p className="text-gray-700 text-sm"> Subjects </p>
+                </div>
+                <div className="flex flex-col justify-center items-center bg-blue-50 p-4 rounded-lg">
+                  <GoClock className="text-3xl text-blue-500" />
+                  <h3 className="text-center font-semibold text-black mt-2">
+                    {exam.duration}
+                  </h3>
+                  <p className="text-gray-700 text-sm"> Duration </p>
+                </div>
+                <div className="flex flex-col justify-center items-center bg-orange-50 p-4 rounded-lg">
+                  <LuBuilding className="text-3xl text-orange-500" />
+                  <h3 className="text-center font-semibold text-black mt-2 ">
+                    {exam.conductingBody}
+                  </h3>
+                  <p className="text-gray-700 text-sm text-center"> Conducting Body </p>
+                </div>
+              </div>
+            </Card>
 
-                {/* Syllabus Card */}
-                <div className="bg-white rounded-lg p-6 mt-6 shadow-md">
-                  <h2 className="text-2xl font-bold text-black mb-4">
-                    Syllabus
-                  </h2>
-                  <div className="space-y-4">
-                    {exam.syllabus &&
+            {/* SYLLABUS */}
+            <Card>
+              <SectionTitle>Syllabus</SectionTitle>
+              <div className="space-y-3">
+                {exam.syllabus &&
                       exam.syllabus.split(". ").map((subject, index) => {
                         const [name, content] = subject.split(": ");
                         const colors = [
@@ -195,14 +142,14 @@ const ExamDetail = () => {
                         ];
                         const getColor = (idx) => colors[idx % colors.length];
                         return (
-                          <div key={index} className="flex items-center gap-2">
-                            <strong className="text-black">{name}:</strong>
+                          <div key={index} className="flex sm:items-center max-sm:flex-col gap-2">
+                            <strong className="text-black max-sm:text-sm">{name}:</strong>
                             <div className="flex flex-wrap gap-2 mt-1">
                               {content
                                 ? content.split(", ").map((item, idx) => (
                                     <span
                                       key={idx}
-                                      className={`px-2 py-1 rounded-2xl text-sm ${getColor(
+                                      className={`px-2 py-1 rounded-2xl text-sm max-sm:text-xs ${getColor(
                                         idx
                                       )}`}
                                     >
@@ -214,110 +161,76 @@ const ExamDetail = () => {
                           </div>
                         );
                       })}
-                  </div>
-                </div>
               </div>
+            </Card>
+          </div>
 
-              {/* Sidebar */}
-              <div className="space-y-6">
-                {/* Contact Info */}
-                <div className="bg-white rounded-lg p-6 shadow-md">
-                  <h3 className="text-xl font-bold text-black mb-4">
-                    Contact Information
-                  </h3>
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <FiLink className="inline-block mr-2 text-gray-500 text-sm" />
-                      <a
-                        href={exam.website}
-                        className="text-blue-400 hover:text-blue-300 break-all"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {exam.website}
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Exam Facts */}
-                <div className="bg-white rounded-lg p-6 shadow-md">
-                  <h3 className="text-xl font-bold text-black mb-4">
-                    Exam Facts
-                  </h3>
-
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <HiMiniCalendarDateRange className="w-4 h-4 shrink-0 text-gray-500" />
-                      <span className="text-gray-700 text-sm">
-                        {formatDate(deadlineInfo.date)}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <SiTicktick className="w-4 h-4 shrink-0 text-gray-500" />
-                      <span className="text-gray-700 text-sm">
-                        {exam.eligibility}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <PiNewspaperClippingBold className="w-4 h-4 shrink-0 text-gray-500" />
-                      <span className="text-gray-700 text-sm">
-                        {exam.pattern}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <SiWorldhealthorganization className="w-4 h-4 shrink-0 text-gray-500" />
-                      <span className="text-gray-700 text-sm">
-                        {exam.conductingBody}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Upcoming Deadlines */}
-                <div className="bg-white rounded-lg p-6 shadow-md">
-                  <h3 className="text-xl font-bold text-black mb-4">
-                    Upcoming Deadlines
-                  </h3>
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm text-gray-600">
-                          {formatDate(deadlineInfo.label)}
-                        </p>
-                        <p className="text-lg font-semibold text-black">
-                          {formatDate(deadlineInfo.date)}
-                        </p>
-                      </div>
-                      <div>
-                        <span
-                          className={`px-2 py-1 rounded-full text-sm font-medium ${
-                            formatDate(deadlineInfo.tag) === "Registration Open"
-                              ? "bg-green-100 text-green-700"
-                              : formatDate(deadlineInfo.tag) ===
-                                "Registration Closed"
-                              ? "bg-red-100 text-red-700"
-                              : "bg-gray-100 text-gray-700"
-                          }`}
-                        >
-                          {deadlineInfo.tag}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Syllabus */}
+          {/* SIDEBAR */}
+          <div className="space-y-6">
+            <Card>
+              <SectionTitle>Contact</SectionTitle>
+              <div className="flex items-start gap-2 text-sm">
+                <FiLink className="text-gray-400 mt-1" />
+                <a
+                  href={exam.website}
+                  target="_blank"
+                  className="text-blue-500 break-all"
+                >
+                  {exam.website}
+                </a>
               </div>
-            </div>
-          </>
-        )}
+            </Card>
+
+            <Card>
+              <SectionTitle>Exam Facts</SectionTitle>
+              <Fact
+                icon={<HiMiniCalendarDateRange />}
+                value={formatDate(exam.testDate)}
+              />
+              <Fact icon={<SiTicktick />} value={exam.eligibility} />
+              <Fact icon={<PiNewspaperClippingBold />} value={exam.pattern} />
+              <Fact
+                icon={<SiWorldhealthorganization />}
+                value={exam.conductingBody}
+              />
+            </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
+
+/* ---------- REUSABLE UI ---------- */
+
+const Card = ({ children }) => (
+  <div className="bg-white rounded-xl p-5 shadow-md">{children}</div>
+);
+
+const SectionTitle = ({ children }) => (
+  <h2 className="text-lg sm:text-xl font-bold mb-4">{children}</h2>
+);
+
+const Stat = ({ icon, value, label }) => (
+  <div className="flex flex-col items-center bg-gray-50 rounded-lg p-4 text-center">
+    <div className="text-2xl text-blue-500">{icon}</div>
+    <p className="font-semibold mt-1">{value}</p>
+    <p className="text-xs text-gray-500">{label}</p>
+  </div>
+);
+
+const Badge = ({ icon, value }) => (
+  <span className="flex items-center gap-1 bg-white/20 px-3 py-1 rounded-full">
+    {icon}
+    {value}
+  </span>
+);
+
+const Fact = ({ icon, value }) => (
+  <div className="flex items-center gap-3 text-sm text-gray-700">
+    <span className="text-gray-400">{icon}</span>
+    {value}
+  </div>
+);
 
 export default ExamDetail;
