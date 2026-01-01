@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import { loginSuccess } from "../../../redux/authSlice.js";
 import Button from "../../common components/Button";
 import Input from "../../common components/Input/Input";
-import "./Login.css";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -56,7 +55,7 @@ const Login = () => {
         );
         const user = response.data.user;
         if (user.role === "customer") navigate("/home");
-        else if (user.role === "admin") navigate("/menu");
+        else if (user.role === "admin") navigate("/home");
       } else {
         setErrors({ form: response.data.message || "Login failed" });
       }
@@ -95,14 +94,15 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-full w-full">
-      <div className="flex flex-col items-center gap-4 w-[45%]">
+    <div className="h-full w-full flex justify-center items-center px-5 lg:px-0">
+      <div className="flex flex-col items-center gap-4 w-full max-w-xs">
         <div className="w-full my-2">
           <h3 className="text-2xl text-sky-900 font-semibold">Login</h3>
         </div>
         <form onSubmit={handleFormLogin} className="w-full flex flex-col gap-4">
           <Input
             type="email"
+            x
             name="email"
             value={formData.email}
             onChange={handleInputChange}

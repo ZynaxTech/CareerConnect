@@ -172,7 +172,7 @@ const Footer = () => {
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex flex-col md:flex-row justify-center items-center gap-4">
             {/* Copyright */}
-            <div className="flex items-center gap-2 text-gray-600 text-sm">
+            <div className="flex items-center gap-2 text-gray-600 text-sm text-center">
               <span>© 2025 CareerConnect. All rights reserved.</span>
             </div>
           </div>

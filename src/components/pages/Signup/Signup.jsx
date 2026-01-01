@@ -7,7 +7,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import Button from "../../common components/Button";
 import Input from "../../common components/Input";
-import "./Signup.css";
 
 const Signup = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -90,8 +89,8 @@ const Signup = () => {
     setConfirmPasswordVisible((prev) => !prev);
   };
   return (
-    <div className="flex justify-center items-center h-full w-full">
-      <div className="flex flex-col items-center gap-4 w-[45%]">
+    <div className="h-full w-full flex justify-center items-center px-5 lg:px-0">
+      <div className="flex flex-col items-center gap-4 w-full max-w-xs">
         <div className="w-full my-2">
           <h3 className="text-2xl font-semibold text-sky-900">Sign Up</h3>
         </div>

@@ -55,6 +55,7 @@ const VerifyOTP = () => {
       );
       dispatch(setOTPEntered(true));
       setIsVerified(true);
+      setError("");
       setSuccessMessage(res.data.message);
       setTimeout(() => {
         navigate(`/auth/update-password/${email}`);
@@ -73,25 +74,26 @@ const VerifyOTP = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
-      {/* Main content */}
-      <div className="flex-1 flex items-center justify-center p-4">
-        <div className="w-full max-w-md space-y-6">
+    <div className="h-full w-full flex justify-center items-center">
+      <div className="flex flex-col items-center gap-4 w-full">
+        <div className="max-sm:w-11/12 w-full max-w-sm">
           <Card className="shadow-lg">
-            <CardHeader className="space-y-1">
+            <CardHeader className="space-y-1 max-sm:px-3">
               {!isVerified && (
-                <CardTitle className="text-2xl text-center text-sky-900">
+                <CardTitle className="max-sm:text-xl text-2xl text-center text-sky-900">
                   Verify Your Email
                 </CardTitle>
               )}
-              <CardDescription className="text-center">
+              <CardDescription className="text-center max-sm:text-sm">
                 {!isVerified && "Enter the 6-digit code sent to your email"}
               </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-6">
+            <CardContent className="space-y-6  max-sm:px-3">
               {error && (
                 <Alert variant="destructive">
-                  <AlertDescription>{error}</AlertDescription>
+                  <AlertDescription className="text-center">
+                    {error}
+                  </AlertDescription>
                 </Alert>
               )}
 
@@ -119,7 +121,7 @@ const VerifyOTP = () => {
               ) : (
                 <>
                   {/* OTP Input */}
-                  <div className="flex justify-between mb-6">
+                  <div className="flex justify-between mb-6 max-sm:mb-4">
                     {otp.map((digit, index) => (
                       <Input
                         key={index}
@@ -128,7 +130,7 @@ const VerifyOTP = () => {
                         onChange={(e) => handleChange(index, e.target.value)}
                         maxLength={1}
                         ref={(el) => (inputRefs.current[index] = el)}
-                        className="w-12 h-12 text-center text-xl font-bold"
+                        className="max-sm:w-11 max-sm:h-11 max-sm:text-lg w-12 h-12 text-center text-xl font-bold"
                       />
                     ))}
                   </div>

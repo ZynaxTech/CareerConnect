@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useState } from "react";
+import { HiOutlineLockClosed } from "react-icons/hi2";
 import { RiLoader3Fill } from "react-icons/ri";
 import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import Password from "../../../assets/password.svg";
 import { setPasswordReset } from "../../../redux/authSlice.js";
 import Button from "../../common components/Button";
 import Input from "../../common components/Input";
@@ -86,8 +86,8 @@ const NewPassword = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-full w-full">
-      <div className="flex flex-col items-center gap-4 w-[45%]">
+    <div className="h-full w-full flex justify-center items-center px-5 lg:px-0">
+      <div className="flex flex-col items-center gap-4 w-full max-w-xs">
         <div className="w-full my-2 flex flex-col gap-2">
           <h3 className="text-2xl text-sky-900 font-semibold">
             Create New Password
@@ -105,7 +105,7 @@ const NewPassword = () => {
             name="password"
             value={formData.password}
             onChange={handleInputChange}
-            image={Password}
+            icon={<HiOutlineLockClosed className="text-xl text-gray-500" />}
             placeholder="Your Password"
             password={true}
             togglePassword={togglePassword}
@@ -118,7 +118,7 @@ const NewPassword = () => {
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleInputChange}
-            image={Password}
+            icon={<HiOutlineLockClosed className="text-xl text-gray-500" />}
             placeholder="Confirm Password"
             password={true}
             togglePassword={toggleConfirmPassword}

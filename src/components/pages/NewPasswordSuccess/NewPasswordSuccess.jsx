@@ -12,8 +12,8 @@ const NewPasswordSuccess = () => {
   const dispatch = useDispatch();
 
   return (
-    <div className="flex justify-center items-center h-full w-full">
-      <div className="flex flex-col items-center justify-center gap-4 w-[45%]">
+    <div className="h-full w-full flex justify-center items-center px-5 lg:px-0">
+      <div className="flex flex-col items-center gap-4 w-full max-w-xs">
         <img src={ResetDone} alt="Cloud Done" />
         <h3 className="text-2xl font-semibold mt-2 text-sky-900">
           Password Changed!

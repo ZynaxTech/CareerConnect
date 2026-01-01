@@ -100,7 +100,7 @@ const University = () => {
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar */}
-          <aside className="w-full lg:w-72 shrink-0 lg:sticky lg:top-24">
+          <aside className="w-full lg:w-72 shrink-0 lg:sticky lg:top-24 self-start">
             <div className="bg-gray-800 border border-gray-700 rounded-lg p-4">
               <h3 className="flex items-center gap-2 text-white font-semibold mb-4">
                 <CiFilter /> Filters

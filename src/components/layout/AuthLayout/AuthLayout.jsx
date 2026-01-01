@@ -1,13 +1,11 @@
 import { Outlet } from "react-router-dom";
 import careerConnectLogo from "../../../assets/careerconnect.png";
 
-import "./AuthLayout.css";
-
 const AuthLayout = () => {
   return (
-    <div className="container-layout">
-      <div className="sides h-full relative">
-        <div className="logo-position flex flex-col justify-center items-center">
+    <div className="flex h-screen w-screen max-lg:justify-center max-lg:items-center">
+      <div className="flex flex-1 flex-col max-lg:justify-center max-lg:items-center relative gap-10">
+        <div className="lg:absolute lg:top-6 lg:left-[26px] w-fit flex flex-col justify-center items-center">
           <img
             src={careerConnectLogo}
             alt="a fork and spoon logo"
@@ -20,7 +18,7 @@ const AuthLayout = () => {
         </div>
         <Outlet />
       </div>
-      <div className="sides right-side bg-gray-900">
+      <div className="flex-1 flex-col hidden lg:flex lg:items-center lg:justify-center bg-gray-900">
         <img
           className="logo-glow"
           src={careerConnectLogo}

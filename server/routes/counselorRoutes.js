@@ -23,7 +23,6 @@ counselorRouter.delete("/:id", verifyToken, adminAuth, handleDeleteCounselor);
 counselorRouter.post(
   "/send-booking-email",
   verifyToken,
-  adminAuth,
   handleSendBookingEmail
 );
 

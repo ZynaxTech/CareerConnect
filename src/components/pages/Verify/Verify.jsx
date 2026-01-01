@@ -36,8 +36,8 @@ const Verify = () => {
     verifyEmail();
   }, [token, navigate]);
   return (
-    <div className="">
-      <div className="min-h-screen flex items-center justify-center">
+    <div className="h-full w-full flex justify-center items-center px-5 lg:px-0">
+      <div className="flex flex-col items-center gap-4 w-full max-w-md">
         <div className="bg-white p-6 rounded-xl shadow-md text-center w-[90%] max-w-md">
           <h2 className="text-xl font-semibold text-sky-900">{status}</h2>
         </div>
