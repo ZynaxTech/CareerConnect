@@ -54,14 +54,14 @@ const Header = () => {
     {
       id: 1,
       title: "ECAT Exam Deadline",
-      message: "ECAT exam is scheduled for February 30, 2026.",
+      message: "ECAT exam is scheduled for January 03, 2026.",
       type: "exam",
-      date: "2026-02-30",
+      date: "2026-01-03",
     },
     {
       id: 2,
       title: "University Admissions",
-      message: "Admissions for Fall 2025 are now open.",
+      message: "Admissions for Spring 2026 are now open.",
       type: "university",
       date: "2025-12-15",
     },
