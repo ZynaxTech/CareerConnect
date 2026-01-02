@@ -1,6 +1,12 @@
 // Exam schema and model
 const { db } = require("../config/db.js");
 
+const helpingSchema = new db.Schema({
+  type: { type: String, required: true },
+  title: { type: String, required: true },
+  url: { type: String, required: true },
+});
+
 const examSchema = new db.Schema(
   {
     id: { type: String, required: true, unique: true },
@@ -20,6 +26,7 @@ const examSchema = new db.Schema(
     syllabus: { type: String, required: true, trim: true },
     conductingBody: { type: String, required: true, trim: true },
     website: { type: String, required: true, trim: true },
+    helpingMaterials: [helpingSchema],
   },
   { timestamps: true }
 );
