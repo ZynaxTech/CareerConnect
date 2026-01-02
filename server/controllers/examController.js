@@ -41,6 +41,7 @@ const handlePostCreateExam = async (req, res) => {
       syllabus,
       conductingBody,
       website,
+      helpingMaterials,
     } = req.body;
 
     // minimal validation based on model
@@ -59,7 +60,8 @@ const handlePostCreateExam = async (req, res) => {
       !pattern ||
       !syllabus ||
       !conductingBody ||
-      !website
+      !website ||
+      !helpingMaterials
     ) {
       return res
         .status(400)
@@ -98,6 +100,7 @@ const handlePostCreateExam = async (req, res) => {
       syllabus,
       conductingBody,
       website,
+      helpingMaterials: helpingMaterials || [],
     });
 
     await exam.save();

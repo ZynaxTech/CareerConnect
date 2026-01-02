@@ -2,7 +2,8 @@ import axios from "axios";
 import { BookOpen } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CiCalendar } from "react-icons/ci";
-import { FiLink } from "react-icons/fi";
+import { FaYoutube } from "react-icons/fa";
+import { FiExternalLink, FiLink } from "react-icons/fi";
 import { GoClock, GoPeople } from "react-icons/go";
 import { HiMiniCalendarDateRange } from "react-icons/hi2";
 import { LuBuilding } from "react-icons/lu";
@@ -21,6 +22,7 @@ const ExamDetail = () => {
       setIsLoading(true);
       try {
         const res = await axios.get(`http://localhost:3000/api/exam/${id}`);
+        console.log(res.data.exam);
         if (res.data?.success) setExam(res.data.exam);
       } catch (err) {
         setError("Failed to load exam details");
@@ -75,9 +77,18 @@ const ExamDetail = () => {
             </p>
 
             <div className="mt-4 flex flex-wrap justify-center gap-3 text-xs sm:text-sm">
-              <Badge icon={<CiCalendar className="text-orange-300" />} value={formatDate(exam.testDate)} />
-              <Badge icon={<GoClock className="text-blue-300"/>} value={exam.duration} />
-              <Badge icon={<GoPeople className="text-red-300" />} value={exam.universities} />
+              <Badge
+                icon={<CiCalendar className="text-orange-300" />}
+                value={formatDate(exam.testDate)}
+              />
+              <Badge
+                icon={<GoClock className="text-blue-300" />}
+                value={exam.duration}
+              />
+              <Badge
+                icon={<GoPeople className="text-red-300" />}
+                value={exam.universities}
+              />
             </div>
           </div>
         </div>
@@ -122,7 +133,10 @@ const ExamDetail = () => {
                   <h3 className="text-center font-semibold text-black mt-2 ">
                     {exam.conductingBody}
                   </h3>
-                  <p className="text-gray-700 text-sm text-center"> Conducting Body </p>
+                  <p className="text-gray-700 text-sm text-center">
+                    {" "}
+                    Conducting Body{" "}
+                  </p>
                 </div>
               </div>
             </Card>
@@ -132,35 +146,40 @@ const ExamDetail = () => {
               <SectionTitle>Syllabus</SectionTitle>
               <div className="space-y-3">
                 {exam.syllabus &&
-                      exam.syllabus.split(". ").map((subject, index) => {
-                        const [name, content] = subject.split(": ");
-                        const colors = [
-                          "bg-blue-50 text-blue-500",
-                          "bg-green-50 text-green-500",
-                          "bg-yellow-50 text-yellow-500",
-                          "bg-purple-50 text-purple-500",
-                        ];
-                        const getColor = (idx) => colors[idx % colors.length];
-                        return (
-                          <div key={index} className="flex sm:items-center max-sm:flex-col gap-2">
-                            <strong className="text-black max-sm:text-sm">{name}:</strong>
-                            <div className="flex flex-wrap gap-2 mt-1">
-                              {content
-                                ? content.split(", ").map((item, idx) => (
-                                    <span
-                                      key={idx}
-                                      className={`px-2 py-1 rounded-2xl text-sm max-sm:text-xs ${getColor(
-                                        idx
-                                      )}`}
-                                    >
-                                      {item.trim()}
-                                    </span>
-                                  ))
-                                : null}
-                            </div>
-                          </div>
-                        );
-                      })}
+                  exam.syllabus.split(". ").map((subject, index) => {
+                    const [name, content] = subject.split(": ");
+                    const colors = [
+                      "bg-blue-50 text-blue-500",
+                      "bg-green-50 text-green-500",
+                      "bg-yellow-50 text-yellow-500",
+                      "bg-purple-50 text-purple-500",
+                    ];
+                    const getColor = (idx) => colors[idx % colors.length];
+                    return (
+                      <div
+                        key={index}
+                        className="flex sm:items-center max-sm:flex-col gap-2"
+                      >
+                        <strong className="text-black max-sm:text-sm">
+                          {name}:
+                        </strong>
+                        <div className="flex flex-wrap gap-2 mt-1">
+                          {content
+                            ? content.split(", ").map((item, idx) => (
+                                <span
+                                  key={idx}
+                                  className={`px-2 py-1 rounded-2xl text-sm max-sm:text-xs ${getColor(
+                                    idx
+                                  )}`}
+                                >
+                                  {item.trim()}
+                                </span>
+                              ))
+                            : null}
+                        </div>
+                      </div>
+                    );
+                  })}
               </div>
             </Card>
           </div>
@@ -194,6 +213,56 @@ const ExamDetail = () => {
                 value={exam.conductingBody}
               />
             </Card>
+
+            {/* HELPING MATERIAL */}
+            {exam.helpingMaterials?.length > 0 && (
+              <Card>
+                <SectionTitle>Helping Material</SectionTitle>
+
+                <div className="space-y-4">
+                  {exam.helpingMaterials.map((item, index) => (
+                    <a
+                      key={index}
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-between gap-4 p-4 rounded-lg border hover:shadow-md transition group w-full"
+                    >
+                      <div className="flex items-center gap-3">
+                        {/* Icon */}
+                        <div
+                          className={`p-3 rounded-lg ${
+                            item.type === "youtube"
+                              ? "bg-red-50 text-red-600"
+                              : "bg-blue-50 text-blue-600"
+                          }`}
+                        >
+                          {item.type === "youtube" ? (
+                            <FaYoutube className="text-xl" />
+                          ) : (
+                            <FiExternalLink className="text-xl" />
+                          )}
+                        </div>
+
+                        {/* Text */}
+                        <div>
+                          <h4 className="font-semibold text-gray-900 group-hover:text-blue-600 transition">
+                            {item.title}
+                          </h4>
+                          <p className="text-xs text-gray-500 break-all">
+                            {item.url}
+                          </p>
+                        </div>
+                      </div>
+
+                      <span className="text-sm text-blue-500 font-medium">
+                        Open
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              </Card>
+            )}
           </div>
         </div>
       </div>
@@ -227,7 +296,7 @@ const Badge = ({ icon, value }) => (
 );
 
 const Fact = ({ icon, value }) => (
-  <div className="flex items-center gap-3 text-sm text-gray-700">
+  <div className="flex items-center gap-3 text-sm text-gray-700 mb-2">
     <span className="text-gray-400">{icon}</span>
     {value}
   </div>
