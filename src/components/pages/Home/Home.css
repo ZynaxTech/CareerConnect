@@ -1,0 +1,63 @@
+.home-hero {
+  background: linear-gradient(180deg, #0b0b0c 0%, #111113 100%);
+  min-height: 80vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.home-hero::before {
+  content: "";
+  position: absolute;
+  right: -10%;
+  top: -10%;
+  width: 680px;
+  height: 680px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(59, 130, 246, 0.18),
+    rgba(99, 102, 241, 0.06) 40%,
+    transparent 60%
+  );
+  filter: blur(60px);
+  pointer-events: none;
+}
+
+.home-hero::after {
+  content: "";
+  position: absolute;
+  left: -5%;
+  bottom: -10%;
+  width: 420px;
+  height: 420px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.02);
+  transform: rotate(-12deg);
+  filter: blur(8px);
+}
+
+.stat {
+  padding: 0.25rem 0;
+  text-align: center;
+}
+
+.cursor {
+  display: inline-block;
+  background-color: black;
+  width: 1px;
+  margin-left: 2px;
+  animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+  0%,
+  50%,
+  100% {
+    opacity: 1;
+  }
+  25%,
+  75% {
+    opacity: 0;
+  }
+}
+
